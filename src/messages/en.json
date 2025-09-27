@@ -1,0 +1,112 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "update": "Update",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "view": "View",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "blog": "Blog",
+    "contact": "Contact",
+    "admin": "Admin",
+    "login": "Login",
+    "logout": "Logout"
+  },
+  "hero": {
+    "title": "La Marina - Leader in Metal Processing",
+    "subtitle": "Bending, cutting, welding and custom solutions",
+    "description": "With over 30 years of experience in the industry, we offer high-quality solutions for industrial and private clients.",
+    "cta": "Make Inquiry",
+    "learnMore": "Learn More"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Professional metal processing solutions",
+    "bending": {
+      "title": "Sheet Metal Bending",
+      "description": "Precise bending of various thicknesses and materials"
+    },
+    "cutting": {
+      "title": "Cutting and Processing",
+      "description": "Precise cutting with modern equipment"
+    },
+    "welding": {
+      "title": "Welding Services",
+      "description": "Professional welding work by certified specialists"
+    },
+    "custom": {
+      "title": "Custom Solutions",
+      "description": "Individual projects according to your needs"
+    }
+  },
+  "portfolio": {
+    "title": "Our Projects",
+    "subtitle": "Gallery of our best work",
+    "viewAll": "View All",
+    "categories": {
+      "industrial": "Industrial Projects",
+      "private": "Private Orders",
+      "repair": "Repair Work",
+      "custom": "Custom Solutions"
+    }
+  },
+  "blog": {
+    "title": "Blog and News",
+    "subtitle": "Latest industry news",
+    "readMore": "Read More",
+    "categories": {
+      "industry": "Industry News",
+      "company": "Company Events",
+      "technical": "Technical Articles",
+      "tips": "Useful Tips"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "We're ready to answer your questions",
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "company": "Company",
+      "message": "Message",
+      "subject": "Subject",
+      "submit": "Send Inquiry"
+    },
+    "info": {
+      "address": "Address",
+      "phone": "Phone",
+      "email": "Email",
+      "hours": "Working Hours"
+    }
+  },
+  "footer": {
+    "description": "La Marina is a leading company in Bulgaria, specialized in metal processing, bending, cutting and welding work.",
+    "quickLinks": "Quick Links",
+    "services": "Services",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved"
+  }
+}
