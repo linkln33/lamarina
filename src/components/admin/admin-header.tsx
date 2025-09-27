@@ -19,8 +19,8 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   return (
-    <header className="bg-background border-b border-border flex-shrink-0">
-      <div className="flex items-center justify-between px-4 lg:px-6 py-3">
+    <header className="bg-background border-b border-border flex-shrink-0 h-16">
+      <div className="flex items-center justify-between px-4 lg:px-6 h-full">
         <div className="flex items-center space-x-3">
           {/* Mobile menu button */}
           <Button

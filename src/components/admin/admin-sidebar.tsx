@@ -65,7 +65,7 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
       )}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-border">
+          <div className="flex items-center justify-between px-4 h-16 border-b border-border">
             <div className="flex items-center space-x-2">
               <div className="p-2 bg-primary rounded-lg">
                 <Wrench className="h-6 w-6 text-primary-foreground" />
