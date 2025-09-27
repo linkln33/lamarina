@@ -228,9 +228,9 @@ export default function ListingsPage() {
   });
 
   const handleDeleteListing = (id: string) => {
-    if (confirm('Сигурни ли сте, че искате да изтриете този листинг?')) {
+    if (confirm('Сигурни ли сте, че искате да изтриете тази обява?')) {
       setListings(listings.filter(listing => listing.id !== id));
-      toast.success('Листингът беше изтрит успешно');
+      toast.success('Обявата беше изтрита успешно');
     }
   };
 
@@ -238,7 +238,7 @@ export default function ListingsPage() {
     setListings(listings.map(listing => 
       listing.id === id ? { ...listing, featured: !listing.featured } : listing
     ));
-    toast.success('Статусът на листинга беше обновен');
+    toast.success('Статусът на обявата беше обновен');
   };
 
   const handleToggleStatus = (id: string) => {
@@ -248,7 +248,7 @@ export default function ListingsPage() {
         status: listing.status === 'published' ? 'draft' : 'published' 
       } : listing
     ));
-    toast.success('Статусът на листинга беше обновен');
+    toast.success('Статусът на обявата беше обновен');
   };
 
   return (
@@ -256,7 +256,7 @@ export default function ListingsPage() {
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl lg:text-3xl font-bold break-words">Управление на листинги</h1>
+          <h1 className="text-2xl lg:text-3xl font-bold break-words">Управление на обяви</h1>
           <p className="text-muted-foreground text-sm lg:text-base break-words">
             Създавайте и управлявайте вашите продукти и услуги
           </p>
@@ -264,8 +264,8 @@ export default function ListingsPage() {
         <div className="flex gap-2 flex-shrink-0">
           <Button onClick={() => setIsCreateDialogOpen(true)} size="sm" className="lg:h-10 lg:px-4">
             <Plus className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Нов листинг</span>
-            <span className="sm:hidden">Нов</span>
+            <span className="hidden sm:inline">Нова обява</span>
+            <span className="sm:hidden">Нова</span>
           </Button>
         </div>
       </div>
@@ -280,7 +280,7 @@ export default function ListingsPage() {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   id="search"
-                  placeholder="Търси листинги..."
+                  placeholder="Търси обяви..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -429,16 +429,16 @@ export default function ListingsPage() {
         <Card>
           <CardContent className="py-12 text-center">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Няма намерени листинги</h3>
+            <h3 className="text-lg font-semibold mb-2">Няма намерени обяви</h3>
             <p className="text-muted-foreground mb-4">
               {searchTerm || filterCategory !== 'all' || filterStatus !== 'all'
                 ? 'Опитайте с различни филтри'
-                : 'Създайте първия си листинг'
+                : 'Създайте първата си обява'
               }
             </p>
             <Button onClick={() => setIsCreateDialogOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
-              Създай листинг
+              Създай обява
             </Button>
           </CardContent>
         </Card>
@@ -453,12 +453,12 @@ export default function ListingsPage() {
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {isCreateDialogOpen ? 'Създай нов листинг' : 'Редактирай листинг'}
+              {isCreateDialogOpen ? 'Създай нова обява' : 'Редактирай обява'}
             </DialogTitle>
             <DialogDescription>
               {isCreateDialogOpen 
-                ? 'Попълнете информацията за новия листинг'
-                : 'Редактирайте информацията за листинга'
+                ? 'Попълнете информацията за новата обява'
+                : 'Редактирайте информацията за обявата'
               }
             </DialogDescription>
           </DialogHeader>
@@ -476,10 +476,10 @@ export default function ListingsPage() {
                   likes: 0
                 };
                 setListings([newListing, ...listings]);
-                toast.success('Листингът беше създаден успешно');
+                toast.success('Обявата беше създадена успешно');
               } else {
                 setListings(listings.map(l => l.id === listing.id ? { ...listing, updatedAt: new Date().toISOString() } : l));
-                toast.success('Листингът беше обновен успешно');
+                toast.success('Обявата беше обновена успешно');
               }
               setIsCreateDialogOpen(false);
               setIsEditDialogOpen(false);
