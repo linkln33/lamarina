@@ -46,9 +46,15 @@ export function Navigation() {
             ))}
           </div>
 
-          {/* Desktop Actions */}
+              {/* Desktop Actions */}
               <div className="hidden md:flex items-center space-x-4">
                 <LanguageToggle />
+                <Button asChild variant="outline" size="sm">
+                  <Link href="/admin">
+                    <Wrench className="h-4 w-4 mr-2" />
+                    Админ
+                  </Link>
+                </Button>
               </div>
 
           {/* Mobile menu */}
@@ -91,18 +97,26 @@ export function Navigation() {
                     </nav>
                   </div>
                   
-                  {/* Footer Actions */}
-                  <div className="p-6 border-t border-border/50 space-y-6">
-                    <div className="text-center">
-                      <p className="text-sm text-muted-foreground mb-4">Избери език</p>
-                      <LanguageToggle />
-                    </div>
+                      {/* Footer Actions */}
+                      <div className="p-6 border-t border-border/50 space-y-6">
+                        <div className="text-center">
+                          <p className="text-sm text-muted-foreground mb-4">Избери език</p>
+                          <LanguageToggle />
+                        </div>
+                        <div className="text-center">
+                          <Button asChild variant="outline" size="sm" className="w-full">
+                            <Link href="/admin" onClick={() => setIsOpen(false)}>
+                              <Wrench className="h-4 w-4 mr-2" />
+                              Админ панел
+                            </Link>
+                          </Button>
+                        </div>
                         <div className="text-center">
                           <p className="text-xs text-muted-foreground">
                             © 2024 LAMARINA BG. Всички права запазени.
                           </p>
                         </div>
-                  </div>
+                      </div>
                 </div>
               </SheetContent>
             </Sheet>
