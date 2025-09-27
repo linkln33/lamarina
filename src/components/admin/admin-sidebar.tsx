@@ -13,12 +13,14 @@ import {
   Globe,
   BarChart3,
   Mail,
-  Shield
+  Shield,
+  Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Homepage', href: '/admin/homepage', icon: Home },
   { name: 'Listings', href: '/admin/listings', icon: Package },
   { name: 'Blog', href: '/admin/blog', icon: FileText },
   { name: 'Portfolio', href: '/admin/portfolio', icon: Image },

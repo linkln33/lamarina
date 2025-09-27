@@ -3,50 +3,42 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  Wrench, 
-  Scissors, 
-  Zap, 
-  Settings, 
+import {
+  Wrench,
+  Scissors,
+  Zap,
+  Settings,
   ArrowRight,
-  CheckCircle 
+  CheckCircle
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { CMS } from '@/lib/cms';
+import { useState, useEffect } from 'react';
 
 export function Services() {
   const { t } = useLanguage();
+  const [servicesData, setServicesData] = useState(CMS.getHomepageContent().services);
+
+  useEffect(() => {
+    setServicesData(CMS.getHomepageContent().services);
+  }, []);
   
-  const services = [
-    {
-      icon: Wrench,
-      title: t('services.bending'),
-      description: t('services.bending.desc'),
-      features: [t('services.bending.feature1'), t('services.bending.feature2'), t('services.bending.feature3')],
-      color: "bg-warning/10 text-warning border-warning/20"
-    },
-    {
-      icon: Scissors,
-      title: t('services.cutting'),
-      description: t('services.cutting.desc'),
-      features: [t('services.cutting.feature1'), t('services.cutting.feature2'), t('services.cutting.feature3')],
-      color: "bg-accent/10 text-accent border-accent/20"
-    },
-    {
-      icon: Zap,
-      title: t('services.welding'),
-      description: t('services.welding.desc'),
-      features: [t('services.welding.feature1'), t('services.welding.feature2'), t('services.welding.feature3')],
-      color: "bg-success/10 text-success border-success/20"
-    },
-    {
-      icon: Settings,
-      title: t('services.custom'),
-      description: t('services.custom.desc'),
-      features: [t('services.custom.feature1'), t('services.custom.feature2'), t('services.custom.feature3')],
-      color: "bg-primary/10 text-primary border-primary/20"
-    }
-  ];
+  // Icon mapping
+  const iconMap: { [key: string]: React.ComponentType<{ className?: string }> } = {
+    Wrench,
+    Scissors,
+    Zap,
+    Settings
+  };
+
+  const services = servicesData.map(service => ({
+    icon: iconMap[service.icon] || Wrench,
+    title: service.title,
+    description: service.description,
+    features: service.features,
+    color: service.color
+  }));
 
   return (
     <section className="py-20 bg-muted/30">

@@ -6,9 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { Wrench, ArrowRight, Star, Shield, Clock } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { CMS } from '@/lib/cms';
+import { useState, useEffect } from 'react';
 
 export function Hero() {
   const { t } = useLanguage();
+  const [heroData, setHeroData] = useState(CMS.getHomepageContent().hero);
+
+  useEffect(() => {
+    setHeroData(CMS.getHomepageContent().hero);
+  }, []);
   
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -42,37 +49,37 @@ export function Hero() {
               </Badge>
               
                   <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
-                    LAMARINA BG
-                    <span className="block text-blue-400">{t('hero.subtitle')}</span>
+                    {heroData.title}
+                    <span className="block text-blue-400">{heroData.subtitle}</span>
                   </h1>
-              
-              <p className="text-xl text-slate-300 max-w-lg">
-                {t('hero.description')}
-              </p>
+
+                  <p className="text-xl text-slate-300 max-w-lg">
+                    {heroData.description}
+                  </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg border-2 border-primary-foreground/20 hover:border-primary-foreground/40">
-                {t('hero.cta.primary')}
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/20 hover:border-white/40 bg-white/5 backdrop-blur-sm">
-                {t('hero.cta.secondary')}
-              </Button>
-            </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg border-2 border-primary-foreground/20 hover:border-primary-foreground/40">
+                    {heroData.ctaPrimary}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                  <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/20 hover:border-white/40 bg-white/5 backdrop-blur-sm">
+                    {heroData.ctaSecondary}
+                  </Button>
+                </div>
 
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-6 pt-8">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-white">500+</div>
+                    <div className="text-2xl font-bold text-white">{heroData.stats.projects}</div>
                     <div className="text-sm text-slate-400">{t('stats.projects')}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-white">30+</div>
+                    <div className="text-2xl font-bold text-white">{heroData.stats.experience}</div>
                     <div className="text-sm text-slate-400">{t('stats.experience')}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-white">100%</div>
+                    <div className="text-2xl font-bold text-white">{heroData.stats.clients}</div>
                     <div className="text-sm text-slate-400">{t('stats.clients')}</div>
                   </div>
                 </div>
@@ -93,8 +100,8 @@ export function Hero() {
                           <Wrench className="h-6 w-6 text-accent" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-white">{t('features.equipment')}</h3>
-                          <p className="text-slate-300">{t('features.equipment.desc')}</p>
+                          <h3 className="text-lg font-semibold text-white">{heroData.features.equipment.title}</h3>
+                          <p className="text-slate-300">{heroData.features.equipment.description}</p>
                         </div>
                       </div>
 
@@ -103,8 +110,8 @@ export function Hero() {
                           <Shield className="h-6 w-6 text-success" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-white">{t('features.quality')}</h3>
-                          <p className="text-slate-300">{t('features.quality.desc')}</p>
+                          <h3 className="text-lg font-semibold text-white">{heroData.features.quality.title}</h3>
+                          <p className="text-slate-300">{heroData.features.quality.description}</p>
                         </div>
                       </div>
 
@@ -113,8 +120,8 @@ export function Hero() {
                           <Clock className="h-6 w-6 text-warning" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-semibold text-white">{t('features.speed')}</h3>
-                          <p className="text-slate-300">{t('features.speed.desc')}</p>
+                          <h3 className="text-lg font-semibold text-white">{heroData.features.speed.title}</h3>
+                          <p className="text-slate-300">{heroData.features.speed.description}</p>
                         </div>
                       </div>
                 </div>
