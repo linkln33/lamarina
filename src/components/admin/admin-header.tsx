@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Moon, Bell, User } from 'lucide-react';
+import { Search, Moon, Bell, User, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -13,17 +13,30 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export function AdminHeader() {
+interface AdminHeaderProps {
+  onMenuClick: () => void;
+}
+
+export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   return (
     <header className="bg-background border-b border-border">
-      <div className="flex items-center justify-between px-6 py-4">
+      <div className="flex items-center justify-between px-4 md:px-6 py-4">
         <div className="flex items-center space-x-4">
+          {/* Mobile menu button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onMenuClick}
+            className="md:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
           <h2 className="text-lg font-semibold text-foreground">Административен панел</h2>
         </div>
         
-        <div className="flex items-center space-x-4">
-          {/* Search */}
-          <div className="relative">
+        <div className="flex items-center space-x-2 md:space-x-4">
+          {/* Search - hidden on mobile */}
+          <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
