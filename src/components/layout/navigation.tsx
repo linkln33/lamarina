@@ -66,51 +66,28 @@ export function Navigation() {
                   <span className="sr-only">Отвори меню</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-72 bg-background/80 backdrop-blur-lg border-l border-border/30 shadow-xl">
-                <SheetHeader className="pb-3">
-                  <SheetTitle className="text-center text-base">Меню</SheetTitle>
+              <SheetContent side="right" className="w-64 bg-background/80 backdrop-blur-lg border-l border-border/30 shadow-xl h-auto">
+                <SheetHeader className="pb-2">
+                  <SheetTitle className="text-center text-sm">Меню</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col h-full">
-                  
-                  {/* Navigation Links */}
-                  <div className="flex-1 px-3 py-4">
-                    <nav className="space-y-0.5">
-                      {navItems.map((item, index) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          className="block px-3 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-accent/30 rounded-md transition-all duration-200 hover:translate-x-0.5"
-                          onClick={() => setIsOpen(false)}
-                          style={{
-                            animationDelay: `${index * 30}ms`,
-                          }}
-                        >
-                          {item.label}
-                        </Link>
-                      ))}
-                    </nav>
-                  </div>
-                  
-                      {/* Footer Actions */}
-                      <div className="p-3 border-t border-border/30 space-y-3">
-                        <div className="text-center">
-                          <p className="text-xs text-muted-foreground mb-1.5">Избери език</p>
-                          <LanguageToggle />
-                        </div>
-                        <div className="text-center">
-                          <Button asChild variant="outline" size="sm" className="w-full text-xs h-8">
-                            <Link href="/admin" onClick={() => setIsOpen(false)}>
-                              <Wrench className="h-3 w-3 mr-1.5" />
-                              Админ панел
-                            </Link>
-                          </Button>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-xs text-muted-foreground/80">
-                            © 2024 LAMARINA BG
-                          </p>
-                        </div>
-                      </div>
+                
+                {/* Navigation Links Only */}
+                <div className="px-3 py-2">
+                  <nav className="space-y-0.5">
+                    {navItems.map((item, index) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-3 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-accent/30 rounded-md transition-all duration-200 hover:translate-x-0.5"
+                        onClick={() => setIsOpen(false)}
+                        style={{
+                          animationDelay: `${index * 30}ms`,
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </nav>
                 </div>
               </SheetContent>
             </Sheet>
