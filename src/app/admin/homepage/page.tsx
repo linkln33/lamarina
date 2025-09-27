@@ -80,33 +80,30 @@ export default function HomepageEditor() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
-          <TabsTrigger value="hero" className="flex items-center gap-2 text-xs md:text-sm">
-            <Home className="h-4 w-4" />
-            <span className="hidden sm:inline">Hero секция</span>
-            <span className="sm:hidden">Hero</span>
-          </TabsTrigger>
-          <TabsTrigger value="services" className="flex items-center gap-2 text-xs md:text-sm">
-            <Wrench className="h-4 w-4" />
-            <span className="hidden sm:inline">Услуги</span>
-            <span className="sm:hidden">Услуги</span>
-          </TabsTrigger>
-          <TabsTrigger value="portfolio" className="flex items-center gap-2 text-xs md:text-sm">
-            <Image className="h-4 w-4" />
-            <span className="hidden sm:inline">Портфолио</span>
-            <span className="sm:hidden">Портфолио</span>
-          </TabsTrigger>
-          <TabsTrigger value="blog" className="flex items-center gap-2 text-xs md:text-sm">
-            <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline">Блог</span>
-            <span className="sm:hidden">Блог</span>
-          </TabsTrigger>
-          <TabsTrigger value="contact" className="flex items-center gap-2 text-xs md:text-sm">
-            <Users className="h-4 w-4" />
-            <span className="hidden sm:inline">Контакти</span>
-            <span className="sm:hidden">Контакти</span>
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground w-max">
+            <TabsTrigger value="hero" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
+              <Home className="h-4 w-4 mr-2" />
+              Hero
+            </TabsTrigger>
+            <TabsTrigger value="services" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
+              <Wrench className="h-4 w-4 mr-2" />
+              Услуги
+            </TabsTrigger>
+            <TabsTrigger value="portfolio" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
+              <Image className="h-4 w-4 mr-2" />
+              Портфолио
+            </TabsTrigger>
+            <TabsTrigger value="blog" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
+              <FileText className="h-4 w-4 mr-2" />
+              Блог
+            </TabsTrigger>
+            <TabsTrigger value="contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
+              <Users className="h-4 w-4 mr-2" />
+              Контакти
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Hero Section Editor */}
         <TabsContent value="hero" className="space-y-4">
@@ -145,7 +142,7 @@ function HeroEditor({ hero, onUpdate }: { hero: HeroSection; onUpdate: (updates:
         <CardTitle>Hero секция</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="hero-title">Заглавие</Label>
             <Input
@@ -174,7 +171,7 @@ function HeroEditor({ hero, onUpdate }: { hero: HeroSection; onUpdate: (updates:
           />
         </div>
 
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="hero-experience">Опит</Label>
             <Input
@@ -205,7 +202,7 @@ function HeroEditor({ hero, onUpdate }: { hero: HeroSection; onUpdate: (updates:
         {/* Stats */}
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Статистики</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="stats-projects">Проекти</Label>
               <Input
@@ -370,7 +367,7 @@ function ServicesEditor({ services, onUpdate }: { services: Service[]; onUpdate:
               </Button>
             </div>
             
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
                 <Label>Заглавие</Label>
                 <Input

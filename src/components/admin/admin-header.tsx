@@ -19,9 +19,9 @@ interface AdminHeaderProps {
 
 export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   return (
-    <header className="bg-background border-b border-border">
-      <div className="flex items-center justify-between px-4 md:px-6 py-4">
-        <div className="flex items-center space-x-4">
+    <header className="bg-background border-b border-border flex-shrink-0">
+      <div className="flex items-center justify-between px-4 lg:px-6 py-3">
+        <div className="flex items-center space-x-3">
           {/* Mobile menu button */}
           <Button
             variant="ghost"
@@ -31,19 +31,27 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <h2 className="text-lg font-semibold text-foreground">Административен панел</h2>
+          <div>
+            <h2 className="text-lg font-semibold text-foreground">Административен панел</h2>
+            <p className="text-xs text-muted-foreground hidden sm:block">LAMARINA BG</p>
+          </div>
         </div>
         
-        <div className="flex items-center space-x-2 md:space-x-4">
-          {/* Search - hidden on mobile */}
-          <div className="relative hidden md:block">
+        <div className="flex items-center space-x-2">
+          {/* Search - hidden on small screens */}
+          <div className="relative hidden lg:block">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Търси..."
-              className="pl-10 pr-4 py-2 w-64 border border-input rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+              className="pl-10 pr-4 py-2 w-48 xl:w-64 text-sm"
             />
           </div>
+
+          {/* Search button for mobile */}
+          <Button variant="ghost" size="sm" className="lg:hidden">
+            <Search className="h-4 w-4" />
+          </Button>
 
           {/* Theme Toggle */}
           <Button variant="ghost" size="sm">
@@ -53,7 +61,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           {/* Notifications */}
           <Button variant="ghost" size="sm" className="relative">
             <Bell className="h-4 w-4" />
-            <Badge className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+            <Badge className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center p-0">
               3
             </Badge>
           </Button>
@@ -61,7 +69,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+              <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
                 <User className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
