@@ -13,14 +13,16 @@ export default function AdminLayout({
 
   return (
     <div className="h-screen flex overflow-hidden bg-background">
-      {/* Desktop Sidebar */}
-      <div className="hidden md:flex md:w-64 md:flex-col">
+      {/* Desktop Sidebar Spacer */}
+      <div className="hidden md:block md:w-64 md:flex-shrink-0">
         <AdminSidebar isOpen={true} onClose={() => {}} />
       </div>
-
+      
       {/* Mobile Sidebar */}
-      <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-
+      <div className="md:hidden">
+        <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      </div>
+      
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
