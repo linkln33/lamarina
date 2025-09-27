@@ -94,9 +94,9 @@ export function Navigation() {
                 <div className="p-3 border-t border-border/30 space-y-2 mt-auto">
                   <div className="flex items-center justify-center space-x-2">
                     <LanguageToggle />
-                    <Button asChild variant="outline" size="sm" className="text-xs h-7">
+                    <Button asChild size="sm" className="text-sm h-8 bg-primary hover:bg-primary/90 text-primary-foreground">
                       <Link href="/admin" onClick={() => setIsOpen(false)}>
-                        <Wrench className="h-3 w-3 mr-1" />
+                        <Wrench className="h-4 w-4 mr-1.5" />
                         Админ
                       </Link>
                     </Button>
