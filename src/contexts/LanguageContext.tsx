@@ -135,14 +135,31 @@ const translations = {
     'blog.article3': 'Поддръжка на метални конструкции',
     'blog.article3.desc': 'Как да поддържате вашите метални изделия',
     
-    // Footer
-    'footer.description': 'Фаворит в производството на метални покривни системи. Символ на новаторство, съчетано с професионализъм.',
-    'footer.quickLinks': 'Бързи връзки',
-    'footer.services': 'Услуги',
-    'footer.contact': 'Контакти',
-    'footer.copyright': '© 2024 La Marina. Всички права запазени.',
-    'footer.privacy': 'Политика за поверителност',
-    'footer.terms': 'Условия за ползване'
+        // Footer
+        'footer.description': 'Фаворит в производството на метални покривни системи. Символ на новаторство, съчетано с професионализъм.',
+        'footer.quickLinks': 'Бързи връзки',
+        'footer.services': 'Услуги',
+        'footer.contact': 'Контакти',
+        'footer.copyright': '© 2024 La Marina. Всички права запазени.',
+        'footer.privacy': 'Политика за поверителност',
+        'footer.terms': 'Условия за ползване',
+
+        // Admin Panel
+        'admin.title': 'Административен панел',
+        'admin.search': 'Търси...',
+        'admin.profile': 'Профил',
+        'admin.settings': 'Настройки',
+        'admin.logout': 'Изход',
+        'admin.dashboard': 'Табло',
+        'admin.homepage': 'Начална страница',
+        'admin.listings': 'Листинги',
+        'admin.blog': 'Блог',
+        'admin.portfolio': 'Портфолио',
+        'admin.users': 'Потребители',
+        'admin.pages': 'Страници',
+        'admin.analytics': 'Аналитика',
+        'admin.messages': 'Съобщения',
+        'admin.security': 'Сигурност'
   },
   en: {
     // Navigation
@@ -265,14 +282,31 @@ const translations = {
     'blog.article3': 'Metal Structure Maintenance',
     'blog.article3.desc': 'How to maintain your metal products',
     
-    // Footer
-    'footer.description': 'Leader in metal roofing systems production. A symbol of innovation combined with professionalism.',
-    'footer.quickLinks': 'Quick Links',
-    'footer.services': 'Services',
-    'footer.contact': 'Contact',
-    'footer.copyright': '© 2024 La Marina. All rights reserved.',
-    'footer.privacy': 'Privacy Policy',
-    'footer.terms': 'Terms of Service'
+        // Footer
+        'footer.description': 'Leader in metal roofing systems production. A symbol of innovation combined with professionalism.',
+        'footer.quickLinks': 'Quick Links',
+        'footer.services': 'Services',
+        'footer.contact': 'Contact',
+        'footer.copyright': '© 2024 La Marina. All rights reserved.',
+        'footer.privacy': 'Privacy Policy',
+        'footer.terms': 'Terms of Service',
+
+        // Admin Panel
+        'admin.title': 'Admin Panel',
+        'admin.search': 'Search...',
+        'admin.profile': 'Profile',
+        'admin.settings': 'Settings',
+        'admin.logout': 'Logout',
+        'admin.dashboard': 'Dashboard',
+        'admin.homepage': 'Homepage',
+        'admin.listings': 'Listings',
+        'admin.blog': 'Blog',
+        'admin.portfolio': 'Portfolio',
+        'admin.users': 'Users',
+        'admin.pages': 'Pages',
+        'admin.analytics': 'Analytics',
+        'admin.messages': 'Messages',
+        'admin.security': 'Security'
   }
 }
 

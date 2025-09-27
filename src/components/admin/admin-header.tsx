@@ -4,6 +4,8 @@ import { Search, Moon, Bell, User, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { LanguageToggle } from '@/components/layout/language-toggle';
+import { useLanguage } from '@/contexts/LanguageContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +20,8 @@ interface AdminHeaderProps {
 }
 
 export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
+  const { t } = useLanguage();
+  
   return (
     <header className="bg-background border-b border-border flex-shrink-0 h-16">
       <div className="flex items-center justify-between px-4 lg:px-6 h-full">
@@ -32,7 +36,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             <Menu className="h-5 w-5" />
           </Button>
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Административен панел</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t('admin.title')}</h2>
             <p className="text-xs text-muted-foreground hidden sm:block">LAMARINA BG</p>
           </div>
         </div>
@@ -43,7 +47,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Търси..."
+              placeholder={t('admin.search')}
               className="pl-10 pr-4 py-2 w-48 xl:w-64 text-sm"
             />
           </div>
@@ -52,6 +56,9 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           <Button variant="ghost" size="sm" className="lg:hidden">
             <Search className="h-4 w-4" />
           </Button>
+
+          {/* Language Toggle */}
+          <LanguageToggle />
 
           {/* Theme Toggle */}
           <Button variant="ghost" size="sm">
@@ -84,14 +91,14 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                Профил
+                {t('admin.profile')}
               </DropdownMenuItem>
               <DropdownMenuItem>
-                Настройки
+                {t('admin.settings')}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                Изход
+                {t('admin.logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

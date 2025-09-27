@@ -19,19 +19,20 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
-const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { name: 'Homepage', href: '/admin/homepage', icon: Home },
-  { name: 'Listings', href: '/admin/listings', icon: Package },
-  { name: 'Blog', href: '/admin/blog', icon: FileText },
-  { name: 'Portfolio', href: '/admin/portfolio', icon: Image },
-  { name: 'Users', href: '/admin/users', icon: Users },
-  { name: 'Pages', href: '/admin/pages', icon: Globe },
-  { name: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
-  { name: 'Messages', href: '/admin/messages', icon: Mail },
-  { name: 'Settings', href: '/admin/settings', icon: Settings },
-  { name: 'Security', href: '/admin/security', icon: Shield },
+const getNavigation = (t: (key: string) => string) => [
+  { name: t('admin.dashboard'), href: '/admin', icon: LayoutDashboard },
+  { name: t('admin.homepage'), href: '/admin/homepage', icon: Home },
+  { name: t('admin.listings'), href: '/admin/listings', icon: Package },
+  { name: t('admin.blog'), href: '/admin/blog', icon: FileText },
+  { name: t('admin.portfolio'), href: '/admin/portfolio', icon: Image },
+  { name: t('admin.users'), href: '/admin/users', icon: Users },
+  { name: t('admin.pages'), href: '/admin/pages', icon: Globe },
+  { name: t('admin.analytics'), href: '/admin/analytics', icon: BarChart3 },
+  { name: t('admin.messages'), href: '/admin/messages', icon: Mail },
+  { name: t('admin.settings'), href: '/admin/settings', icon: Settings },
+  { name: t('admin.security'), href: '/admin/security', icon: Shield },
 ];
 
 interface AdminSidebarProps {
@@ -41,6 +42,8 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
+  const navigation = getNavigation(t);
 
   return (
     <>
