@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Menu, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { LanguageToggle } from './language-toggle';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -67,11 +67,10 @@ export function Navigation() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-sm bg-background/95 backdrop-blur-md border-l border-border/50">
+                <SheetHeader>
+                  <SheetTitle className="text-center">Меню</SheetTitle>
+                </SheetHeader>
                 <div className="flex flex-col h-full">
-                  {/* Header - Mobile menu doesn't need logo */}
-                  <div className="p-4 border-b border-border/50">
-                    <h2 className="text-lg font-semibold text-foreground text-center">Меню</h2>
-                  </div>
                   
                   {/* Navigation Links */}
                   <div className="flex-1 px-4 py-6">
