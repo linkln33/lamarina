@@ -526,6 +526,14 @@ function ListingBuilder({
   onSave: (listing: Listing) => void; 
   onCancel: () => void; 
 }) {
+  const categories = [
+    'Покривни системи',
+    'Метални конструкции',
+    'Огъване на метали',
+    'Лазерно рязане',
+    'Заваръчни работи',
+    'Персонализирани решения'
+  ];
   const [formData, setFormData] = useState<Listing>(listing || {
     id: '',
     title: '',
