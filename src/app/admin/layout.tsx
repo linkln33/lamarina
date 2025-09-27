@@ -24,11 +24,13 @@ export default function AdminLayout({
       </div>
       
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-auto p-4 lg:p-6">
-          <div className="max-w-7xl mx-auto min-w-0">
-            {children}
+        <main className="flex-1 overflow-auto">
+          <div className="p-4 lg:p-6">
+            <div className="max-w-7xl mx-auto min-w-0 w-full">
+              {children}
+            </div>
           </div>
         </main>
       </div>

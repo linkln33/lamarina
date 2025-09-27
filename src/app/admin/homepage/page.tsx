@@ -59,48 +59,49 @@ export default function HomepageEditor() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-w-0 w-full">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl lg:text-3xl font-bold break-words">Редактор на началната страница</h1>
-          <p className="text-muted-foreground text-sm lg:text-base break-words">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold break-words leading-tight">Редактор на началната страница</h1>
+          <p className="text-muted-foreground text-sm lg:text-base break-words mt-1">
             Управлявайте съдържанието на вашата начална страница
           </p>
         </div>
         <div className="flex gap-2 flex-shrink-0">
-          <Button variant="outline" onClick={() => window.open('/', '_blank')} size="sm" className="lg:h-10 lg:px-4">
-            <Eye className="h-4 w-4 mr-2" />
+          <Button variant="outline" onClick={() => window.open('/', '_blank')} size="sm" className="lg:h-10 lg:px-4 text-xs sm:text-sm">
+            <Eye className="h-4 w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">Преглед</span>
+            <span className="sm:hidden">👁</span>
           </Button>
-          <Button onClick={handleSave} size="sm" className="lg:h-10 lg:px-4">
-            <Save className="h-4 w-4 mr-2" />
+          <Button onClick={handleSave} size="sm" className="lg:h-10 lg:px-4 text-xs sm:text-sm">
+            <Save className="h-4 w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">Запази промените</span>
             <span className="sm:hidden">Запази</span>
           </Button>
         </div>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <div className="overflow-x-auto">
-          <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground w-max">
-            <TabsTrigger value="hero" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
-              <Home className="h-4 w-4 mr-2" />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 w-full min-w-0">
+        <div className="overflow-x-auto -mx-1 px-1">
+          <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground w-max min-w-full sm:min-w-0">
+            <TabsTrigger value="hero" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium ring-offset-background transition-all">
+              <Home className="h-4 w-4 mr-1 sm:mr-2" />
               Hero
             </TabsTrigger>
-            <TabsTrigger value="services" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
-              <Wrench className="h-4 w-4 mr-2" />
+            <TabsTrigger value="services" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium ring-offset-background transition-all">
+              <Wrench className="h-4 w-4 mr-1 sm:mr-2" />
               Услуги
             </TabsTrigger>
-            <TabsTrigger value="portfolio" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
-              <Image className="h-4 w-4 mr-2" />
+            <TabsTrigger value="portfolio" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium ring-offset-background transition-all">
+              <Image className="h-4 w-4 mr-1 sm:mr-2" />
               Портфолио
             </TabsTrigger>
-            <TabsTrigger value="blog" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
-              <FileText className="h-4 w-4 mr-2" />
+            <TabsTrigger value="blog" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium ring-offset-background transition-all">
+              <FileText className="h-4 w-4 mr-1 sm:mr-2" />
               Блог
             </TabsTrigger>
-            <TabsTrigger value="contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all">
-              <Users className="h-4 w-4 mr-2" />
+            <TabsTrigger value="contact" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-2 sm:px-3 py-1.5 text-xs sm:text-sm font-medium ring-offset-background transition-all">
+              <Users className="h-4 w-4 mr-1 sm:mr-2" />
               Контакти
             </TabsTrigger>
           </TabsList>
@@ -138,11 +139,11 @@ export default function HomepageEditor() {
 // Hero Section Editor Component
 function HeroEditor({ hero, onUpdate }: { hero: HeroSection; onUpdate: (updates: Partial<HeroSection>) => void }) {
   return (
-    <Card>
+    <Card className="min-w-0 w-full">
       <CardHeader>
         <CardTitle>Hero секция</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 min-w-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <Label htmlFor="hero-title">Заглавие</Label>
@@ -343,19 +344,20 @@ function ServicesEditor({ services, onUpdate }: { services: Service[]; onUpdate:
   };
 
   return (
-    <Card>
+    <Card className="min-w-0 w-full">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Услуги</CardTitle>
-          <Button onClick={addService}>
-            <Plus className="h-4 w-4 mr-2" />
-            Добави услуга
+          <Button onClick={addService} size="sm" className="text-xs sm:text-sm">
+            <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Добави услуга</span>
+            <span className="sm:hidden">Добави</span>
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 min-w-0">
         {services.map((service, index) => (
-          <Card key={service.id} className="p-4">
+          <Card key={service.id} className="p-4 min-w-0 w-full">
             <div className="flex items-center justify-between mb-4">
               <Badge variant="outline">Услуга {index + 1}</Badge>
               <Button
