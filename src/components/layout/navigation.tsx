@@ -57,8 +57,16 @@ export function Navigation() {
                 </Button>
               </div>
 
-          {/* Mobile menu */}
-          <div className="md:hidden">
+          {/* Mobile Actions */}
+          <div className="md:hidden flex items-center space-x-2">
+            <LanguageToggle />
+            <Button asChild variant="outline" size="sm">
+              <Link href="/admin">
+                <Wrench className="h-4 w-4 mr-1" />
+                Админ
+              </Link>
+            </Button>
+            
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">
@@ -66,7 +74,7 @@ export function Navigation() {
                   <span className="sr-only">Отвори меню</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-64 bg-background/80 backdrop-blur-lg border-l border-border/30 shadow-xl h-auto">
+              <SheetContent side="right" className="w-56 bg-background/90 backdrop-blur-md border-l border-border/40 shadow-lg">
                 <SheetHeader className="pb-2">
                   <SheetTitle className="text-center text-sm">Меню</SheetTitle>
                 </SheetHeader>
