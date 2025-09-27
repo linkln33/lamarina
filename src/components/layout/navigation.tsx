@@ -68,14 +68,9 @@ export function Navigation() {
               </SheetTrigger>
               <SheetContent side="right" className="w-full max-w-sm bg-background/95 backdrop-blur-md border-l border-border/50">
                 <div className="flex flex-col h-full">
-                  {/* Header */}
-                  <div className="flex items-center justify-between p-4 border-b border-border/50">
-                        <div className="flex items-center space-x-2">
-                          <div className="p-1.5 bg-primary rounded-lg">
-                            <Wrench className="h-4 w-4 text-primary-foreground" />
-                          </div>
-                          <span className="text-lg font-bold text-foreground">LAMARINA BG</span>
-                        </div>
+                  {/* Header - Mobile menu doesn't need logo */}
+                  <div className="p-4 border-b border-border/50">
+                    <h2 className="text-lg font-semibold text-foreground text-center">Меню</h2>
                   </div>
                   
                   {/* Navigation Links */}
