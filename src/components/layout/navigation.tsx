@@ -66,29 +66,29 @@ export function Navigation() {
                   <span className="sr-only">Отвори меню</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-80 bg-background/95 backdrop-blur-md border-l border-border/50">
+              <SheetContent side="right" className="w-full max-w-sm bg-background/95 backdrop-blur-md border-l border-border/50">
                 <div className="flex flex-col h-full">
                   {/* Header */}
-                  <div className="flex items-center justify-between p-6 border-b border-border/50">
-                        <div className="flex items-center space-x-3">
-                          <div className="p-2 bg-primary rounded-lg">
-                            <Wrench className="h-5 w-5 text-primary-foreground" />
+                  <div className="flex items-center justify-between p-4 border-b border-border/50">
+                        <div className="flex items-center space-x-2">
+                          <div className="p-1.5 bg-primary rounded-lg">
+                            <Wrench className="h-4 w-4 text-primary-foreground" />
                           </div>
-                          <span className="text-xl font-bold text-foreground">LAMARINA BG</span>
+                          <span className="text-lg font-bold text-foreground">LAMARINA BG</span>
                         </div>
                   </div>
                   
                   {/* Navigation Links */}
-                  <div className="flex-1 px-6 py-8">
-                    <nav className="space-y-2">
+                  <div className="flex-1 px-4 py-6">
+                    <nav className="space-y-1">
                       {navItems.map((item, index) => (
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="block px-4 py-4 text-lg font-medium text-foreground hover:text-primary hover:bg-accent/50 rounded-xl transition-all duration-300 hover:translate-x-2"
+                          className="block px-3 py-3 text-base font-medium text-foreground hover:text-primary hover:bg-accent/50 rounded-lg transition-all duration-300 hover:translate-x-1"
                           onClick={() => setIsOpen(false)}
                           style={{
-                            animationDelay: `${index * 100}ms`,
+                            animationDelay: `${index * 50}ms`,
                           }}
                         >
                           {item.label}
@@ -98,13 +98,13 @@ export function Navigation() {
                   </div>
                   
                       {/* Footer Actions */}
-                      <div className="p-6 border-t border-border/50 space-y-6">
+                      <div className="p-4 border-t border-border/50 space-y-4">
                         <div className="text-center">
-                          <p className="text-sm text-muted-foreground mb-4">Избери език</p>
+                          <p className="text-xs text-muted-foreground mb-2">Избери език</p>
                           <LanguageToggle />
                         </div>
                         <div className="text-center">
-                          <Button asChild variant="outline" size="sm" className="w-full">
+                          <Button asChild variant="outline" size="sm" className="w-full text-sm">
                             <Link href="/admin" onClick={() => setIsOpen(false)}>
                               <Wrench className="h-4 w-4 mr-2" />
                               Админ панел
