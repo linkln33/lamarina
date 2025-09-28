@@ -16,13 +16,17 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const translations = {
   bg: {
     // Navigation
-    'nav.home': 'Начало',
     'nav.about': 'За нас',
-    'nav.services': 'Услуги',
     'nav.portfolio': 'Портфолио',
-    'nav.blog': 'Блог',
-    'nav.contact': 'Контакти',
-    'nav.login': 'Вход',
+    'nav.services': 'Услуги',
+    'nav.blog': 'News Room',
+    'nav.products.title': 'Продукти',
+    'nav.products.roofing': 'Покривни системи',
+    'nav.products.structures': 'Метални конструкции',
+    'nav.products.bending': 'Огъване на метали',
+    'nav.products.cutting': 'Лазерно рязане',
+    'nav.products.welding': 'Заваръчни работи',
+    'nav.products.custom': 'Персонализирани решения',
     
         // Hero
         'hero.title': 'LAMARINA BG',
@@ -163,13 +167,17 @@ const translations = {
   },
   en: {
     // Navigation
-    'nav.home': 'Home',
     'nav.about': 'About',
-    'nav.services': 'Services',
     'nav.portfolio': 'Portfolio',
-    'nav.blog': 'Blog',
-    'nav.contact': 'Contact',
-    'nav.login': 'Login',
+    'nav.services': 'Services',
+    'nav.blog': 'News Room',
+    'nav.products.title': 'Products',
+    'nav.products.roofing': 'Roofing Systems',
+    'nav.products.structures': 'Metal Structures',
+    'nav.products.bending': 'Metal Bending',
+    'nav.products.cutting': 'Laser Cutting',
+    'nav.products.welding': 'Welding Services',
+    'nav.products.custom': 'Custom Solutions',
     
         // Hero
         'hero.title': 'LAMARINA BG',

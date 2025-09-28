@@ -1,9 +1,20 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Get environment variables with fallbacks for development
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
+
+// Check if we have real Supabase credentials
+const isSupabaseConfigured = 
+  process.env.NEXT_PUBLIC_SUPABASE_URL && 
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+  !process.env.NEXT_PUBLIC_SUPABASE_URL.includes('placeholder') &&
+  !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY.includes('placeholder')
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+// Export configuration status for conditional logic
+export const isSupabaseReady = isSupabaseConfigured
 
 // Database types
 export interface Database {

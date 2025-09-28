@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Wrench, ArrowRight, Star, Shield, Clock } from 'lucide-react';
+import { Wrench, ArrowRight, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CMS } from '@/lib/cms';
@@ -12,10 +12,35 @@ import { useState, useEffect } from 'react';
 export function Hero() {
   const { t } = useLanguage();
   const [heroData, setHeroData] = useState(CMS.getHomepageContent().hero);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     setHeroData(CMS.getHomepageContent().hero);
   }, []);
+
+  const nextImage = () => {
+    if (heroData.carousel?.images?.length > 0) {
+      setCurrentImageIndex((prev) => 
+        prev === heroData.carousel.images.length - 1 ? 0 : prev + 1
+      );
+    }
+  };
+
+  const prevImage = () => {
+    if (heroData.carousel?.images?.length > 0) {
+      setCurrentImageIndex((prev) => 
+        prev === 0 ? heroData.carousel.images.length - 1 : prev - 1
+      );
+    }
+  };
+
+  // Auto-advance carousel
+  useEffect(() => {
+    if (heroData.carousel?.images?.length > 0) {
+      const interval = setInterval(nextImage, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [heroData.carousel?.images?.length]);
   
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -85,46 +110,96 @@ export function Hero() {
                 </div>
           </motion.div>
 
-          {/* Right Content - Glassmorphism Card */}
+          {/* Right Content - Picture Carousel */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative"
           >
-            <Card className="glass-card bg-white/10 backdrop-blur-md border-white/20">
-              <CardContent className="p-8">
-                <div className="space-y-6">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-3 bg-accent/20 rounded-lg">
-                          <Wrench className="h-6 w-6 text-accent" />
+            <Card className="glass-card bg-white/10 backdrop-blur-md border-white/20 overflow-hidden">
+              <CardContent className="p-0">
+                {/* Carousel Container */}
+                <div className="relative h-96 w-full">
+                  {/* Images */}
+                  <div className="relative h-full overflow-hidden">
+                    {heroData.carousel?.images?.length > 0 ? (
+                      heroData.carousel.images.map((image, index) => (
+                      <motion.div
+                        key={image.id}
+                        className={`absolute inset-0 ${
+                          index === currentImageIndex ? 'z-10' : 'z-0'
+                        }`}
+                        initial={{ opacity: 0 }}
+                        animate={{ 
+                          opacity: index === currentImageIndex ? 1 : 0,
+                          scale: index === currentImageIndex ? 1 : 1.1
+                        }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <img
+                          src={image.url}
+                          alt={image.alt}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/40" />
+                        <div className="absolute bottom-4 left-4 right-4 text-white">
+                          <h3 className="text-lg font-semibold mb-1">{image.title}</h3>
+                          <p className="text-sm text-white/90">{image.alt}</p>
                         </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-white">{heroData.features.equipment.title}</h3>
-                          <p className="text-slate-300">{heroData.features.equipment.description}</p>
+                      </motion.div>
+                      ))
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
+                        <div className="text-center text-white">
+                          <Wrench className="h-16 w-16 mx-auto mb-4 text-slate-400" />
+                          <h3 className="text-lg font-semibold mb-2">Професионално оборудване</h3>
+                          <p className="text-sm text-slate-300">Модерни машини за прецизна обработка</p>
                         </div>
                       </div>
+                    )}
+                  </div>
 
-                      <div className="flex items-center space-x-3">
-                        <div className="p-3 bg-success/20 rounded-lg">
-                          <Shield className="h-6 w-6 text-success" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-white">{heroData.features.quality.title}</h3>
-                          <p className="text-slate-300">{heroData.features.quality.description}</p>
-                        </div>
-                      </div>
+                  {/* Navigation Arrows - only show if carousel has images */}
+                  {heroData.carousel?.images?.length > 1 && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={prevImage}
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 z-20 bg-black/20 hover:bg-black/40 text-white"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={nextImage}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 z-20 bg-black/20 hover:bg-black/40 text-white"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </>
+                  )}
 
-                      <div className="flex items-center space-x-3">
-                        <div className="p-3 bg-warning/20 rounded-lg">
-                          <Clock className="h-6 w-6 text-warning" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold text-white">{heroData.features.speed.title}</h3>
-                          <p className="text-slate-300">{heroData.features.speed.description}</p>
-                        </div>
-                      </div>
+                  {/* Dots Indicator - only show if carousel has multiple images */}
+                  {heroData.carousel?.images?.length > 1 && (
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+                      {heroData.carousel.images.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentImageIndex(index)}
+                          className={`w-2 h-2 rounded-full transition-all ${
+                            index === currentImageIndex 
+                              ? 'bg-white' 
+                              : 'bg-white/50 hover:bg-white/75'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
+
               </CardContent>
             </Card>
 

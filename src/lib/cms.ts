@@ -27,6 +27,14 @@ export interface HeroSection {
       description: string;
     };
   };
+  carousel: {
+    images: {
+      id: string;
+      url: string;
+      alt: string;
+      title: string;
+    }[];
+  };
 }
 
 export interface Service {
@@ -102,6 +110,28 @@ export const defaultHomepageContent: HomepageContent = {
         title: "Бързо изпълнение",
         description: "Спазване на сроковете за доставка"
       }
+    },
+    carousel: {
+      images: [
+        {
+          id: "carousel-1",
+          url: "/api/placeholder/800/600",
+          alt: "Професионално оборудване",
+          title: "Модерни машини за прецизна обработка"
+        },
+        {
+          id: "carousel-2", 
+          url: "/api/placeholder/800/600",
+          alt: "Гарантирано качество",
+          title: "Сертифицирани процеси и материали"
+        },
+        {
+          id: "carousel-3",
+          url: "/api/placeholder/800/600", 
+          alt: "Бързо изпълнение",
+          title: "Спазване на сроковете за доставка"
+        }
+      ]
     }
   },
   services: [

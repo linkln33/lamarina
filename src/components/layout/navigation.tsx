@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, Wrench } from 'lucide-react';
+import { Menu, Wrench, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { LanguageToggle } from './language-toggle';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -13,12 +14,19 @@ export function Navigation() {
   const { t } = useLanguage();
 
   const navItems = [
-    { href: '/', label: t('nav.home') },
     { href: '/about', label: t('nav.about') },
-    { href: '/services', label: t('nav.services') },
     { href: '/portfolio', label: t('nav.portfolio') },
+    { href: '/services', label: t('nav.services') },
     { href: '/blog', label: t('nav.blog') },
-    { href: '/contact', label: t('nav.contact') },
+  ];
+
+  const productCategories = [
+    { href: '/products/roofing-systems', label: t('nav.products.roofing') },
+    { href: '/products/metal-structures', label: t('nav.products.structures') },
+    { href: '/products/bending', label: t('nav.products.bending') },
+    { href: '/products/cutting', label: t('nav.products.cutting') },
+    { href: '/products/welding', label: t('nav.products.welding') },
+    { href: '/products/custom', label: t('nav.products.custom') },
   ];
 
   return (
@@ -44,6 +52,25 @@ export function Navigation() {
                 {item.label}
               </Link>
             ))}
+            
+            {/* Products Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium">
+                  {t('nav.products.title')}
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                {productCategories.map((category) => (
+                  <DropdownMenuItem key={category.href} asChild>
+                    <Link href={category.href} className="w-full">
+                      {category.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
               {/* Desktop Actions */}
@@ -87,6 +114,26 @@ export function Navigation() {
                         {item.label}
                       </Link>
                     ))}
+                    
+                    {/* Products Section in Mobile */}
+                    <div className="pt-2 border-t border-border/30">
+                      <div className="px-3 py-2 text-sm font-semibold text-foreground">
+                        {t('nav.products.title')}
+                      </div>
+                      {productCategories.map((category, index) => (
+                        <Link
+                          key={category.href}
+                          href={category.href}
+                          className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-accent/30 rounded-md transition-all duration-200"
+                          onClick={() => setIsOpen(false)}
+                          style={{
+                            animationDelay: `${(navItems.length + index) * 30}ms`,
+                          }}
+                        >
+                          {category.label}
+                        </Link>
+                      ))}
+                    </div>
                   </nav>
                 </div>
                 
