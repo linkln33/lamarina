@@ -57,14 +57,21 @@ export interface PortfolioItem {
   order: number;
 }
 
-export interface BlogPost {
+export interface BlogPost extends Record<string, unknown> {
   id: string;
   title: string;
-  description: string;
-  image: string;
-  date: string;
+  content: string;
+  excerpt: string;
   author: string;
-  order: number;
+  authorId: string;
+  category: string;
+  tags: string[];
+  slug: string;
+  status: 'draft' | 'published' | 'archived';
+  views: number;
+  likes: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ContactInfo {
@@ -205,29 +212,53 @@ export const defaultHomepageContent: HomepageContent = {
     {
       id: "blog-1",
       title: "Предимства на лазерното рязане",
-      description: "Защо лазерното рязане е най-добрият избор за вашия проект",
-      image: "/api/placeholder/400/300",
-      date: "2024-01-15",
+      content: "Лазерното рязане е модерна технология, която предлага множество предимства...",
+      excerpt: "Защо лазерното рязане е най-добрият избор за вашия проект",
       author: "LAMARINA BG Team",
-      order: 1
+      authorId: "1",
+      category: "Технологии",
+      tags: ["лазер", "рязване", "метал"],
+      slug: "predimstva-lazerno-ryazane",
+      status: "published",
+      views: 150,
+      likes: 12,
+      order: 1,
+      createdAt: "2024-01-15T10:00:00Z",
+      updatedAt: "2024-01-15T10:00:00Z"
     },
     {
       id: "blog-2",
       title: "Избор на правилния метал",
-      description: "Ръководство за избор на подходящ материал",
-      image: "/api/placeholder/400/300",
-      date: "2024-01-10",
+      content: "Изборът на подходящ метал е критичен за успеха на вашия проект...",
+      excerpt: "Ръководство за избор на подходящ материал",
       author: "LAMARINA BG Team",
-      order: 2
+      authorId: "1",
+      category: "Материали",
+      tags: ["метал", "избор", "материали"],
+      slug: "izbor-pravilen-metal",
+      status: "published",
+      views: 89,
+      likes: 7,
+      order: 2,
+      createdAt: "2024-01-10T10:00:00Z",
+      updatedAt: "2024-01-10T10:00:00Z"
     },
     {
       id: "blog-3",
       title: "Поддръжка на метални конструкции",
-      description: "Как да поддържате вашите метални изделия",
-      image: "/api/placeholder/400/300",
-      date: "2024-01-05",
+      content: "Правилната поддръжка на метални конструкции е от съществено значение...",
+      excerpt: "Как да поддържате вашите метални изделия",
       author: "LAMARINA BG Team",
-      order: 3
+      authorId: "1",
+      category: "Поддръжка",
+      tags: ["поддръжка", "конструкции", "метал"],
+      slug: "poddrzhka-metallni-konstrukcii",
+      status: "published",
+      views: 203,
+      likes: 18,
+      order: 3,
+      createdAt: "2024-01-05T10:00:00Z",
+      updatedAt: "2024-01-05T10:00:00Z"
     }
   ],
   contact: {
@@ -299,4 +330,61 @@ export class CMS {
     content.contact = contact;
     this.saveHomepageContent(content);
   }
+}
+
+// Additional types needed for the application
+export interface Message {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+  status: 'new' | 'read' | 'replied' | 'archived';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatar?: string;
+  role: 'admin' | 'editor' | 'user';
+  phone?: string;
+  bio?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  content: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  status: 'draft' | 'published' | 'archived';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Settings {
+  id: string;
+  key: string;
+  value: unknown;
+  type: 'string' | 'number' | 'boolean' | 'object' | 'array';
+  category: string;
+  updatedAt: string;
+}
+
+export interface AnalyticsEvent {
+  id: string;
+  eventType: string;
+  entityType?: string;
+  entityId?: string;
+  userId?: string;
+  metadata: Record<string, unknown>;
+  timestamp: string;
 }

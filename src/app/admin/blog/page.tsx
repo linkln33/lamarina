@@ -7,7 +7,7 @@ import { Plus, Search, Edit, Trash2, Eye, Calendar, User, FileText } from 'lucid
 import { Input } from '@/components/ui/input';
 import { useCrudOperations } from '@/hooks/admin/useCrudOperations';
 import { useSearchAndFilter } from '@/hooks/admin/useSearchAndFilter';
-import { BlogPost } from '@/lib/database-service';
+import type { BlogPost } from '@/lib/cms';
 
 export default function BlogPage() {
   const { items: blogPosts, loading, searchTerm, setSearchTerm, createItem, deleteItem } = useCrudOperations<BlogPost>({
@@ -29,6 +29,7 @@ export default function BlogPage() {
       slug: 'nova-statiya',
       content: 'Съдържание на статията...',
       excerpt: 'Кратко описание...',
+      author: 'Администратор',
       authorId: '1',
       category: 'Новини',
       tags: [],

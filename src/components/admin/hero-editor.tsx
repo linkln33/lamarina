@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, Star, Image, Upload } from 'lucide-react';
+import { Plus, Trash2, Image } from 'lucide-react';
 import { HeroSection } from '@/lib/cms';
 
 interface HeroEditorProps {
@@ -15,7 +15,7 @@ interface HeroEditorProps {
 }
 
 export function HeroEditor({ hero, onUpdate }: HeroEditorProps) {
-  const updateField = (field: keyof HeroSection, value: any) => {
+  const updateField = (field: keyof HeroSection, value: unknown) => {
     onUpdate({ [field]: value });
   };
 
@@ -137,12 +137,12 @@ export function HeroEditor({ hero, onUpdate }: HeroEditorProps) {
           </div>
           
           <div>
-            <Label htmlFor="backgroundVideo">URL на фоново видео</Label>
+            <Label htmlFor="backgroundImage">URL на фоново изображение</Label>
             <Input
-              id="backgroundVideo"
-              value={hero.backgroundVideo}
-              onChange={(e) => updateField('backgroundVideo', e.target.value)}
-              placeholder="https://example.com/video.mp4"
+              id="backgroundImage"
+              value={hero.backgroundImage || ''}
+              onChange={(e) => updateField('backgroundImage', e.target.value)}
+              placeholder="https://example.com/image.jpg"
             />
           </div>
         </CardContent>

@@ -1,9 +1,9 @@
 // Shared CRUD operations hook for admin components
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { DatabaseService } from '@/lib/database-service';
 
-interface UseCrudOperationsProps<T> {
+interface UseCrudOperationsProps {
   entityType: 'listings' | 'blogPosts' | 'portfolioItems' | 'users' | 'pages';
   onSuccess?: () => void;
 }
@@ -11,31 +11,31 @@ interface UseCrudOperationsProps<T> {
 export function useCrudOperations<T extends { id: string }>({
   entityType,
   onSuccess
-}: UseCrudOperationsProps<T>) {
+}: UseCrudOperationsProps) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Load items based on entity type
-  const loadItems = () => {
+  const loadItems = useCallback(() => {
     setLoading(true);
     try {
       let data: T[] = [];
       switch (entityType) {
         case 'listings':
-          data = DatabaseService.getListings() as T[];
+          data = DatabaseService.getListings() as unknown as T[];
           break;
         case 'blogPosts':
-          data = DatabaseService.getBlogPosts() as T[];
+          data = DatabaseService.getBlogPosts() as unknown as T[];
           break;
         case 'portfolioItems':
-          data = DatabaseService.getPortfolioItems() as T[];
+          data = DatabaseService.getPortfolioItems() as unknown as T[];
           break;
         case 'users':
-          data = DatabaseService.getUsers() as T[];
+          data = DatabaseService.getUsers() as unknown as T[];
           break;
         case 'pages':
-          data = DatabaseService.getPages() as T[];
+          data = DatabaseService.getPages() as unknown as T[];
           break;
       }
       setItems(data);
@@ -45,32 +45,32 @@ export function useCrudOperations<T extends { id: string }>({
     } finally {
       setLoading(false);
     }
-  };
+  }, [entityType]);
 
   useEffect(() => {
     loadItems();
-  }, [entityType]);
+  }, [entityType, loadItems]);
 
   // Create new item
-  const createItem = async (itemData: Omit<T, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const createItem = async (itemData: Omit<T, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'likes'>) => {
     setLoading(true);
     try {
       let newItem: T;
       switch (entityType) {
         case 'listings':
-          newItem = DatabaseService.createListing(itemData as any) as T;
+          newItem = DatabaseService.createListing(itemData as unknown as Parameters<typeof DatabaseService.createListing>[0]) as unknown as T;
           break;
         case 'blogPosts':
-          newItem = DatabaseService.createBlogPost(itemData as any) as T;
+          newItem = DatabaseService.createBlogPost(itemData as unknown as Parameters<typeof DatabaseService.createBlogPost>[0]) as unknown as T;
           break;
         case 'portfolioItems':
-          newItem = DatabaseService.createPortfolioItem(itemData as any) as T;
+          newItem = DatabaseService.createPortfolioItem(itemData as unknown as Parameters<typeof DatabaseService.createPortfolioItem>[0]) as unknown as T;
           break;
         case 'users':
-          newItem = DatabaseService.createUser(itemData as any) as T;
+          newItem = DatabaseService.createUser(itemData as unknown as Parameters<typeof DatabaseService.createUser>[0]) as unknown as T;
           break;
         case 'pages':
-          newItem = DatabaseService.createPage(itemData as any) as T;
+          newItem = DatabaseService.createPage(itemData as unknown as Parameters<typeof DatabaseService.createPage>[0]) as unknown as T;
           break;
         default:
           throw new Error(`Unknown entity type: ${entityType}`);
@@ -95,19 +95,19 @@ export function useCrudOperations<T extends { id: string }>({
     try {
       switch (entityType) {
         case 'listings':
-          DatabaseService.updateListing(id, updates as any);
+          DatabaseService.updateListing(id, updates as Parameters<typeof DatabaseService.updateListing>[1]);
           break;
         case 'blogPosts':
-          DatabaseService.updateBlogPost(id, updates as any);
+          DatabaseService.updateBlogPost(id, updates as Parameters<typeof DatabaseService.updateBlogPost>[1]);
           break;
         case 'portfolioItems':
-          DatabaseService.updatePortfolioItem(id, updates as any);
+          DatabaseService.updatePortfolioItem(id, updates as Parameters<typeof DatabaseService.updatePortfolioItem>[1]);
           break;
         case 'users':
-          DatabaseService.updateUser(id, updates as any);
+          DatabaseService.updateUser(id, updates as Parameters<typeof DatabaseService.updateUser>[1]);
           break;
         case 'pages':
-          DatabaseService.updatePage(id, updates as any);
+          DatabaseService.updatePage(id, updates as Parameters<typeof DatabaseService.updatePage>[1]);
           break;
         default:
           throw new Error(`Unknown entity type: ${entityType}`);

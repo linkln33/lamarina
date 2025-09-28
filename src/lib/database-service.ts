@@ -1,109 +1,16 @@
 // Comprehensive database service for all admin features
 import { LocalDatabase } from './local-database';
 import { NetlifyStorage } from './netlify-storage';
-
-// Types for all database entities
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  avatar?: string;
-  role: 'admin' | 'editor' | 'user';
-  phone?: string;
-  bio?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface BlogPost {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt: string;
-  featuredImage?: string;
-  authorId: string;
-  category: string;
-  tags: string[];
-  status: 'draft' | 'published' | 'archived';
-  publishedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-  views: number;
-  likes: number;
-}
-
-export interface PortfolioItem {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  tags: string[];
-  images: string[];
-  videos: string[];
-  client?: string;
-  projectDate?: string;
-  externalLink?: string;
-  isFeatured: boolean;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Page {
-  id: string;
-  title: string;
-  slug: string;
-  content: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  template: string;
-  isPublished: boolean;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Message {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  subject: string;
-  message: string;
-  attachments: string[];
-  status: 'new' | 'read' | 'replied' | 'closed';
-  priority: 'low' | 'medium' | 'high';
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AnalyticsEvent {
-  id: string;
-  eventType: string;
-  entityType?: string;
-  entityId?: string;
-  userId?: string;
-  metadata: any;
-  timestamp: string;
-}
-
-export interface Settings {
-  id: string;
-  key: string;
-  value: any;
-  type: 'string' | 'number' | 'boolean' | 'object' | 'array';
-  category: string;
-  updatedAt: string;
-}
-
-export interface HomepageSection {
-  id: string;
-  section: string;
-  content: any;
-  updatedAt: string;
-}
+import { Listing } from '@/types/listing';
+import {
+  BlogPost,
+  PortfolioItem,
+  Page,
+  Message,
+  Settings,
+  AnalyticsEvent,
+  User,
+} from '@/lib/cms';
 
 // Main database service class
 export class DatabaseService {
@@ -116,6 +23,32 @@ export class DatabaseService {
   static getUser(id: string): User | null {
     const users = this.getUsers();
     return users.find(u => u.id === id) || null;
+  }
+
+  // ===== LISTINGS MANAGEMENT =====
+  static getListings(): Listing[] {
+    return LocalDatabase.getListings();
+  }
+
+  static createListing(listing: Omit<Listing, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'likes'>): Listing {
+    const newListing: Listing = {
+      ...listing,
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      views: 0,
+      likes: 0
+    };
+    LocalDatabase.addListing(newListing);
+    return newListing;
+  }
+
+  static updateListing(id: string, updates: Partial<Listing>): void {
+    LocalDatabase.updateListing(id, updates);
+  }
+
+  static deleteListing(id: string): void {
+    LocalDatabase.deleteListing(id);
   }
 
   static createUser(user: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): User {
@@ -148,14 +81,14 @@ export class DatabaseService {
   }
 
   static createBlogPost(post: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt' | 'views' | 'likes'>): BlogPost {
-    const newPost: BlogPost = {
+    const newPost = {
       ...post,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       views: 0,
       likes: 0
-    };
+    } as BlogPost;
     LocalDatabase.addBlogPost(newPost);
     return newPost;
   }
@@ -178,12 +111,10 @@ export class DatabaseService {
     return items.find(i => i.id === id) || null;
   }
 
-  static createPortfolioItem(item: Omit<PortfolioItem, 'id' | 'createdAt' | 'updatedAt'>): PortfolioItem {
+  static createPortfolioItem(item: Omit<PortfolioItem, 'id'>): PortfolioItem {
     const newItem: PortfolioItem = {
       ...item,
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      id: Date.now().toString()
     };
     LocalDatabase.addPortfolioItem(newItem);
     return newItem;
@@ -260,7 +191,7 @@ export class DatabaseService {
     return LocalDatabase.getAnalytics();
   }
 
-  static trackEvent(eventType: string, entityType?: string, entityId?: string, metadata?: any): void {
+  static trackEvent(eventType: string, entityType?: string, entityId?: string, metadata?: Record<string, unknown>): void {
     LocalDatabase.trackEvent(eventType, entityType, entityId, metadata);
   }
 
@@ -274,16 +205,16 @@ export class DatabaseService {
     return settings.find(s => s.key === key) || null;
   }
 
-  static setSetting(key: string, value: any, type: Settings['type'], category: string = 'general'): void {
+  static setSetting(key: string, value: unknown, type: Settings['type'], category: string = 'general'): void {
     LocalDatabase.setSetting(key, value, type, category);
   }
 
   // ===== HOMEPAGE CONTENT =====
-  static getHomepageContent(): any {
+  static getHomepageContent(): Record<string, unknown> {
     return LocalDatabase.getHomepageContent();
   }
 
-  static updateHomepageContent(section: string, content: any): void {
+  static updateHomepageContent(section: string, content: Record<string, unknown>): void {
     LocalDatabase.updateHomepageContent(section, content);
   }
 

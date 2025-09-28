@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -39,7 +38,7 @@ export function MediaForm({ formData, onUpdate }: MediaFormProps) {
     });
   };
 
-  const updateVideo = (id: string, field: keyof Listing['videos'][0], value: any) => {
+  const updateVideo = (id: string, field: keyof Listing['videos'][0], value: string | number) => {
     onUpdate({
       videos: formData.videos.map(vid => vid.id === id ? { ...vid, [field]: value } : vid)
     });

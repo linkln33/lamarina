@@ -13,5 +13,5 @@ export const LazyBasicInfoForm = lazy(() => import('./listing-forms/basic-info-f
 export const LazyMediaForm = lazy(() => import('./listing-forms/media-form').then(module => ({ default: module.MediaForm })));
 export const LazySpecificationsForm = lazy(() => import('./listing-forms/specifications-form').then(module => ({ default: module.SpecificationsForm })));
 export const LazyPricingForm = lazy(() => import('./listing-forms/pricing-form').then(module => ({ default: module.PricingForm })));
-export const LazySeoForm = lazy(() => import('./listing-forms/seo-form').then(module => ({ default: module.SeoForm })));
+export const LazySeoForm = lazy(() => import('./listing-forms/seo-form').then(module => ({ default: module.SEOForm })));
 export const LazyContactForm = lazy(() => import('./listing-forms/contact-form').then(module => ({ default: module.ContactForm })));

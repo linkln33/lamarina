@@ -1,5 +1,6 @@
 import { supabase, isSupabaseReady } from './supabase';
 import { Listing } from '@/types/listing';
+import { BlogPost, PortfolioItem, Service } from '@/lib/cms';
 
 // Database service layer for admin functions
 export class SupabaseAdminService {
@@ -196,7 +197,7 @@ export class SupabaseAdminService {
     return data;
   }
 
-  static async createBlogPost(post: any) {
+  static async createBlogPost(post: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>) {
     const { data, error } = await supabase
       .from('blog_posts')
       .insert(post)
@@ -207,7 +208,7 @@ export class SupabaseAdminService {
     return data;
   }
 
-  static async updateBlogPost(id: string, post: any) {
+  static async updateBlogPost(id: string, post: Partial<BlogPost>) {
     const { error } = await supabase
       .from('blog_posts')
       .update({ ...post, updated_at: new Date().toISOString() })
@@ -248,7 +249,7 @@ export class SupabaseAdminService {
     return data;
   }
 
-  static async createPortfolioItem(item: any) {
+  static async createPortfolioItem(item: Omit<PortfolioItem, 'id' | 'createdAt' | 'updatedAt'>) {
     const { data, error } = await supabase
       .from('portfolio_items')
       .insert(item)
@@ -259,7 +260,7 @@ export class SupabaseAdminService {
     return data;
   }
 
-  static async updatePortfolioItem(id: string, item: any) {
+  static async updatePortfolioItem(id: string, item: Partial<PortfolioItem>) {
     const { error } = await supabase
       .from('portfolio_items')
       .update({ ...item, updated_at: new Date().toISOString() })
@@ -300,7 +301,7 @@ export class SupabaseAdminService {
     return data;
   }
 
-  static async createService(service: any) {
+  static async createService(service: Omit<Service, 'id' | 'createdAt' | 'updatedAt'>) {
     const { data, error } = await supabase
       .from('services')
       .insert(service)
@@ -311,7 +312,7 @@ export class SupabaseAdminService {
     return data;
   }
 
-  static async updateService(id: string, service: any) {
+  static async updateService(id: string, service: Partial<Service>) {
     const { error } = await supabase
       .from('services')
       .update({ ...service, updated_at: new Date().toISOString() })
@@ -339,7 +340,7 @@ export class SupabaseAdminService {
     if (error) throw error;
     
     // Convert array to object
-    const content: any = {};
+    const content: Record<string, unknown> = {};
     data?.forEach(item => {
       content[item.section] = item.content;
     });
@@ -347,7 +348,7 @@ export class SupabaseAdminService {
     return content;
   }
 
-  static async updateHomepageContent(section: string, content: any) {
+  static async updateHomepageContent(section: string, content: Record<string, unknown>) {
     const { error } = await supabase
       .from('homepage_content')
       .upsert({
@@ -405,7 +406,7 @@ export class SupabaseAdminService {
 
   // ===== ANALYTICS =====
   
-  static async getAnalytics(timeframe: string = '30d') {
+  static async getAnalytics() {
     const { data, error } = await supabase
       .from('analytics')
       .select('*')
@@ -416,7 +417,7 @@ export class SupabaseAdminService {
     return data || [];
   }
 
-  static async trackEvent(eventType: string, entityType?: string, entityId?: string, metadata?: any) {
+  static async trackEvent(eventType: string, entityType?: string, entityId?: string, metadata?: Record<string, unknown>) {
     const { error } = await supabase
       .from('analytics')
       .insert({

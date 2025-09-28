@@ -56,11 +56,11 @@ export function SEOForm({ formData, onUpdate }: SEOFormProps) {
           <Label htmlFor="keywords">Ключови думи (разделени със запетая)</Label>
           <Input
             id="keywords"
-            value={formData.seo.keywords.join(', ')}
+            value={formData.seo.keywords}
             onChange={(e) => onUpdate({
               seo: { 
                 ...formData.seo, 
-                keywords: e.target.value.split(',').map(k => k.trim()).filter(k => k)
+                keywords: e.target.value
               }
             })}
             placeholder="метал, покриви, сандвич панели"

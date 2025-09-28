@@ -13,6 +13,7 @@ export interface ListingVideo {
   title: string;
   thumbnail: string;
   duration: number;
+  order?: number;
 }
 
 export interface ListingSpecification {
@@ -20,6 +21,7 @@ export interface ListingSpecification {
   name: string;
   value: string;
   unit: string;
+  order?: number;
 }
 
 export interface ListingFeature {
@@ -27,6 +29,7 @@ export interface ListingFeature {
   name: string;
   description: string;
   icon: string; // Lucide icon name
+  order?: number;
 }
 
 export interface ListingPricing {

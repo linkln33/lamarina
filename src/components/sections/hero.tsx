@@ -7,7 +7,7 @@ import { Wrench, ArrowRight, Star, ChevronLeft, ChevronRight } from 'lucide-reac
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CMS } from '@/lib/cms';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 export function Hero() {
   const { t } = useLanguage();
@@ -18,13 +18,13 @@ export function Hero() {
     setHeroData(CMS.getHomepageContent().hero);
   }, []);
 
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     if (heroData.carousel?.images?.length > 0) {
       setCurrentImageIndex((prev) => 
         prev === heroData.carousel.images.length - 1 ? 0 : prev + 1
       );
     }
-  };
+  }, [heroData.carousel?.images?.length]);
 
   const prevImage = () => {
     if (heroData.carousel?.images?.length > 0) {
@@ -40,7 +40,7 @@ export function Hero() {
       const interval = setInterval(nextImage, 5000);
       return () => clearInterval(interval);
     }
-  }, [heroData.carousel?.images?.length]);
+  }, [heroData.carousel?.images?.length, nextImage]);
   
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">

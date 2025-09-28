@@ -16,10 +16,9 @@ interface UseSearchAndFilterProps<T> {
   filterOptions?: FilterOptions;
 }
 
-export function useSearchAndFilter<T extends Record<string, any>>({
+export function useSearchAndFilter<T>({
   items,
-  searchFields,
-  filterOptions
+  searchFields
 }: UseSearchAndFilterProps<T>) {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState<FilterOptions>({});
@@ -50,21 +49,22 @@ export function useSearchAndFilter<T extends Record<string, any>>({
     // Apply category filter
     if (activeFilters.category && activeFilters.category !== 'all') {
       filtered = filtered.filter(item => 
-        item.category === activeFilters.category
+        (item as Record<string, unknown>).category === activeFilters.category
       );
     }
 
     // Apply status filter
     if (activeFilters.status && activeFilters.status !== 'all') {
       filtered = filtered.filter(item => 
-        item.status === activeFilters.status
+        (item as Record<string, unknown>).status === activeFilters.status
       );
     }
 
     // Apply date range filter
     if (activeFilters.dateRange) {
       filtered = filtered.filter(item => {
-        const itemDate = new Date(item.createdAt || item.updatedAt);
+        const itemRecord = item as Record<string, unknown>;
+        const itemDate = new Date((itemRecord.createdAt as string) || (itemRecord.updatedAt as string));
         return itemDate >= activeFilters.dateRange!.start && 
                itemDate <= activeFilters.dateRange!.end;
       });
@@ -75,13 +75,13 @@ export function useSearchAndFilter<T extends Record<string, any>>({
 
   // Get unique categories from items
   const categories = useMemo(() => {
-    const uniqueCategories = new Set(items.map(item => item.category).filter(Boolean));
+    const uniqueCategories = new Set(items.map(item => (item as Record<string, unknown>).category).filter(Boolean));
     return ['all', ...Array.from(uniqueCategories)];
   }, [items]);
 
   // Get unique statuses from items
   const statuses = useMemo(() => {
-    const uniqueStatuses = new Set(items.map(item => item.status).filter(Boolean));
+    const uniqueStatuses = new Set(items.map(item => (item as Record<string, unknown>).status).filter(Boolean));
     return ['all', ...Array.from(uniqueStatuses)];
   }, [items]);
 
@@ -92,7 +92,7 @@ export function useSearchAndFilter<T extends Record<string, any>>({
   };
 
   // Update specific filter
-  const updateFilter = (key: keyof FilterOptions, value: any) => {
+  const updateFilter = (key: keyof FilterOptions, value: string | FilterOptions['dateRange']) => {
     setActiveFilters(prev => ({
       ...prev,
       [key]: value

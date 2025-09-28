@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Edit, Trash2, UserPlus, Shield, Mail, Phone } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
-import { DatabaseService, User as UserType } from '@/lib/database-service';
+import { DatabaseService } from '@/lib/database-service';
+import type { User as UserType } from '@/lib/cms';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<UserType[]>([]);

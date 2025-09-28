@@ -22,8 +22,8 @@ export function PortfolioEditor({ portfolio, onUpdate }: PortfolioEditorProps) {
       description: 'Описание на проекта',
       image: '',
       category: 'Общо',
-      link: '/portfolio',
-      tags: []
+      count: '1',
+      order: 0
     };
     onUpdate([...portfolio, newItem]);
   };
@@ -32,35 +32,12 @@ export function PortfolioEditor({ portfolio, onUpdate }: PortfolioEditorProps) {
     onUpdate(portfolio.filter(item => item.id !== id));
   };
 
-  const updateItem = (id: string, field: keyof PortfolioItem, value: any) => {
+  const updateItem = (id: string, field: keyof PortfolioItem, value: string | string[]) => {
     onUpdate(portfolio.map(item => 
       item.id === id ? { ...item, [field]: value } : item
     ));
   };
 
-  const addTag = (itemId: string) => {
-    const item = portfolio.find(i => i.id === itemId);
-    if (item) {
-      updateItem(itemId, 'tags', [...item.tags, 'нов таг']);
-    }
-  };
-
-  const removeTag = (itemId: string, tagIndex: number) => {
-    const item = portfolio.find(i => i.id === itemId);
-    if (item) {
-      const newTags = item.tags.filter((_, index) => index !== tagIndex);
-      updateItem(itemId, 'tags', newTags);
-    }
-  };
-
-  const updateTag = (itemId: string, tagIndex: number, value: string) => {
-    const item = portfolio.find(i => i.id === itemId);
-    if (item) {
-      const newTags = [...item.tags];
-      newTags[tagIndex] = value;
-      updateItem(itemId, 'tags', newTags);
-    }
-  };
 
   const categories = ['Общо', 'Покривни системи', 'Метални конструкции', 'Огъване', 'Заварка'];
 
@@ -139,51 +116,8 @@ export function PortfolioEditor({ portfolio, onUpdate }: PortfolioEditorProps) {
                     placeholder="https://example.com/image.jpg"
                   />
                 </div>
-                <div>
-                  <Label htmlFor={`portfolio-link-${item.id}`}>Линк</Label>
-                  <Input
-                    id={`portfolio-link-${item.id}`}
-                    value={item.link}
-                    onChange={(e) => updateItem(item.id, 'link', e.target.value)}
-                    placeholder="/portfolio/project"
-                  />
-                </div>
               </div>
 
-              {/* Tags */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <Label>Тагове</Label>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => addTag(item.id)}
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Добави таг
-                  </Button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {item.tags.map((tag, tagIndex) => (
-                    <div key={tagIndex} className="flex items-center gap-1 bg-muted px-2 py-1 rounded">
-                      <Input
-                        value={tag}
-                        onChange={(e) => updateTag(item.id, tagIndex, e.target.value)}
-                        className="h-6 text-sm border-0 bg-transparent p-0"
-                        placeholder="Таг"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeTag(item.id, tagIndex)}
-                        className="h-4 w-4 p-0"
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </CardContent>
           </Card>
         ))}

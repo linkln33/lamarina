@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Edit, Trash2, Eye, Globe, FileText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
-import { DatabaseService, Page as PageType } from '@/lib/database-service';
+import { DatabaseService } from '@/lib/database-service';
+import type { Page as PageType } from '@/lib/cms';
 
 export default function PagesPage() {
   const [pages, setPages] = useState<PageType[]>([]);
@@ -36,9 +37,7 @@ export default function PagesPage() {
       title: 'Нова страница',
       slug: 'nova-stranitsa',
       content: 'Съдържание на страницата...',
-      template: 'default',
-      isPublished: false,
-      order: pages.length
+      status: 'draft'
     });
     setPages(DatabaseService.getPages());
     toast.success('Страницата беше създадена успешно');
@@ -107,13 +106,13 @@ export default function PagesPage() {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
                         <h3 className="font-semibold">{page.title}</h3>
-                        <Badge variant={page.isPublished ? 'default' : 'secondary'}>
-                          {page.isPublished ? 'Публикувана' : 'Чернова'}
+                        <Badge variant={page.status === 'published' ? 'default' : 'secondary'}>
+                          {page.status === 'published' ? 'Публикувана' : page.status === 'draft' ? 'Чернова' : 'Архивирана'}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">/{page.slug}</p>
                       <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
-                        <span>Шаблон: {page.template}</span>
+                        <span>Статус: {page.status}</span>
                         <span>•</span>
                         <span>Създадена: {new Date(page.createdAt).toLocaleDateString('bg-BG')}</span>
                         <span>•</span>

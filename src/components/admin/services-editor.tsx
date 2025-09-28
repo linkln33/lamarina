@@ -21,9 +21,9 @@ export function ServicesEditor({ services, onUpdate }: ServicesEditorProps) {
       title: 'Нова услуга',
       description: 'Описание на услугата',
       icon: 'Wrench',
+      color: '#3B82F6',
+      order: 0,
       features: [],
-      image: '',
-      link: '/services'
     };
     onUpdate([...services, newService]);
   };
@@ -32,7 +32,7 @@ export function ServicesEditor({ services, onUpdate }: ServicesEditorProps) {
     onUpdate(services.filter(service => service.id !== id));
   };
 
-  const updateService = (id: string, field: keyof Service, value: any) => {
+  const updateService = (id: string, field: keyof Service, value: string | Service['features']) => {
     onUpdate(services.map(service => 
       service.id === id ? { ...service, [field]: value } : service
     ));
@@ -41,28 +41,22 @@ export function ServicesEditor({ services, onUpdate }: ServicesEditorProps) {
   const addFeature = (serviceId: string) => {
     const service = services.find(s => s.id === serviceId);
     if (service) {
-      const newFeature = {
-        id: Date.now().toString(),
-        name: 'Нова особеност',
-        description: 'Описание на особеността'
-      };
-      updateService(serviceId, 'features', [...service.features, newFeature]);
+      updateService(serviceId, 'features', [...service.features, 'Нова особеност']);
     }
   };
 
-  const removeFeature = (serviceId: string, featureId: string) => {
+  const removeFeature = (serviceId: string, featureIndex: number) => {
     const service = services.find(s => s.id === serviceId);
     if (service) {
-      updateService(serviceId, 'features', service.features.filter(f => f.id !== featureId));
+      updateService(serviceId, 'features', service.features.filter((_, index) => index !== featureIndex));
     }
   };
 
-  const updateFeature = (serviceId: string, featureId: string, field: string, value: string) => {
+  const updateFeature = (serviceId: string, featureIndex: number, value: string) => {
     const service = services.find(s => s.id === serviceId);
     if (service) {
-      const updatedFeatures = service.features.map(feature => 
-        feature.id === featureId ? { ...feature, [field]: value } : feature
-      );
+      const updatedFeatures = [...service.features];
+      updatedFeatures[featureIndex] = value;
       updateService(serviceId, 'features', updatedFeatures);
     }
   };
@@ -128,26 +122,6 @@ export function ServicesEditor({ services, onUpdate }: ServicesEditorProps) {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor={`service-image-${service.id}`}>URL на изображение</Label>
-                  <Input
-                    id={`service-image-${service.id}`}
-                    value={service.image}
-                    onChange={(e) => updateService(service.id, 'image', e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor={`service-link-${service.id}`}>Линк</Label>
-                  <Input
-                    id={`service-link-${service.id}`}
-                    value={service.link}
-                    onChange={(e) => updateService(service.id, 'link', e.target.value)}
-                    placeholder="/services"
-                  />
-                </div>
-              </div>
 
               {/* Features */}
               <div>
@@ -163,24 +137,18 @@ export function ServicesEditor({ services, onUpdate }: ServicesEditorProps) {
                   </Button>
                 </div>
                 <div className="space-y-2">
-                  {service.features.map((feature, featureIndex) => (
-                    <div key={feature.id} className="flex items-center gap-2 p-2 border rounded">
-                      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-2">
-                        <Input
-                          value={feature.name}
-                          onChange={(e) => updateFeature(service.id, feature.id, 'name', e.target.value)}
-                          placeholder="Име на особеността"
-                        />
-                        <Input
-                          value={feature.description}
-                          onChange={(e) => updateFeature(service.id, feature.id, 'description', e.target.value)}
-                          placeholder="Описание"
-                        />
-                      </div>
+                  {service.features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2 p-2 border rounded">
+                      <Input
+                        value={feature}
+                        onChange={(e) => updateFeature(service.id, index, e.target.value)}
+                        placeholder="Особеност"
+                        className="flex-1"
+                      />
                       <Button
                         variant="destructive"
                         size="sm"
-                        onClick={() => removeFeature(service.id, feature.id)}
+                        onClick={() => removeFeature(service.id, index)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

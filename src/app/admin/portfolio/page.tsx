@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Edit, Trash2, Eye, Image, ExternalLink } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
-import { DatabaseService, PortfolioItem } from '@/lib/database-service';
+import { DatabaseService } from '@/lib/database-service';
+import type { PortfolioItem } from '@/lib/cms';
 
 export default function PortfolioPage() {
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([]);
@@ -19,8 +20,7 @@ export default function PortfolioPage() {
 
   const filteredItems = portfolioItems.filter(item => 
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    item.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleDeleteItem = (id: string) => {
@@ -35,11 +35,9 @@ export default function PortfolioPage() {
     const newItem = DatabaseService.createPortfolioItem({
       title: 'Нов проект',
       description: 'Описание на проекта...',
+      image: '',
       category: 'Индустриални',
-      tags: [],
-      images: [],
-      videos: [],
-      isFeatured: false,
+      count: '1',
       order: portfolioItems.length
     });
     setPortfolioItems(DatabaseService.getPortfolioItems());
@@ -97,14 +95,14 @@ export default function PortfolioPage() {
               <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                 <div className="text-center">
                   <Image className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">{item.images.length} снимки</p>
+                  <p className="text-sm text-muted-foreground">{item.count} проекта</p>
                 </div>
               </div>
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="font-semibold">{item.title}</h3>
-                  <Badge variant={item.isFeatured ? 'default' : 'secondary'}>
-                    {item.isFeatured ? 'Препоръчан' : 'Обикновен'}
+                  <Badge variant="secondary">
+                    {item.category}
                   </Badge>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
@@ -127,14 +125,6 @@ export default function PortfolioPage() {
                     </Button>
                   </div>
                 </div>
-                {item.externalLink && (
-                  <div className="mt-2">
-                    <Button variant="outline" size="sm" className="w-full">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Виж проект
-                    </Button>
-                  </div>
-                )}
               </CardContent>
             </Card>
           ))

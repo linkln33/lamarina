@@ -22,11 +22,15 @@ export function BlogEditor({ blog, onUpdate }: BlogEditorProps) {
       excerpt: 'Кратко описание на статията',
       content: 'Съдържание на статията',
       author: 'Администратор',
-      date: new Date().toISOString().split('T')[0],
-      image: '',
+      authorId: '1',
       category: 'Новини',
       tags: [],
-      slug: 'nova-statia'
+      slug: 'nova-statia',
+      status: 'draft',
+      views: 0,
+      likes: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     onUpdate([...blog, newPost]);
   };
@@ -35,7 +39,7 @@ export function BlogEditor({ blog, onUpdate }: BlogEditorProps) {
     onUpdate(blog.filter(post => post.id !== id));
   };
 
-  const updatePost = (id: string, field: keyof BlogPost, value: any) => {
+  const updatePost = (id: string, field: keyof BlogPost, value: string | string[]) => {
     onUpdate(blog.map(post => 
       post.id === id ? { ...post, [field]: value } : post
     ));
@@ -131,15 +135,6 @@ export function BlogEditor({ blog, onUpdate }: BlogEditorProps) {
                     placeholder="Име на автора"
                   />
                 </div>
-                <div>
-                  <Label htmlFor={`blog-date-${post.id}`}>Дата</Label>
-                  <Input
-                    id={`blog-date-${post.id}`}
-                    type="date"
-                    value={post.date}
-                    onChange={(e) => updatePost(post.id, 'date', e.target.value)}
-                  />
-                </div>
               </div>
 
               <div>
@@ -165,15 +160,6 @@ export function BlogEditor({ blog, onUpdate }: BlogEditorProps) {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor={`blog-image-${post.id}`}>URL на изображение</Label>
-                  <Input
-                    id={`blog-image-${post.id}`}
-                    value={post.image}
-                    onChange={(e) => updatePost(post.id, 'image', e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
                 <div>
                   <Label htmlFor={`blog-slug-${post.id}`}>URL slug</Label>
                   <Input

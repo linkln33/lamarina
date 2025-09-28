@@ -39,7 +39,11 @@ export function ListingBuilderRefactored({ listing, onSave, onCancel }: ListingB
     pricing: {
       basePrice: 0,
       currency: 'BGN',
-      bulkPricing: [],
+      bulkPricing: {
+        '10-49': 0,
+        '50-99': 0,
+        '100+': 0
+      },
       sizeVariants: [],
       discountPercentage: 0,
       discountFixed: 0,
@@ -47,7 +51,7 @@ export function ListingBuilderRefactored({ listing, onSave, onCancel }: ListingB
     seo: {
       metaTitle: '',
       metaDescription: '',
-      keywords: [],
+      keywords: '',
       slug: '',
     },
     contact: {

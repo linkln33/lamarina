@@ -14,31 +14,14 @@ interface PricingFormProps {
 }
 
 export function PricingForm({ formData, onUpdate }: PricingFormProps) {
-  const addBulkPricing = () => {
+  const updateBulkPricing = (field: keyof Listing['pricing']['bulkPricing'], value: number) => {
     onUpdate({
       pricing: {
         ...formData.pricing,
-        bulkPricing: [...formData.pricing.bulkPricing, { minQuantity: 0, maxQuantity: 0, price: 0 }]
-      }
-    });
-  };
-
-  const updateBulkPricing = (index: number, field: keyof Listing['pricing']['bulkPricing'][0], value: any) => {
-    onUpdate({
-      pricing: {
-        ...formData.pricing,
-        bulkPricing: formData.pricing.bulkPricing.map((bp, i) => 
-          i === index ? { ...bp, [field]: value } : bp
-        )
-      }
-    });
-  };
-
-  const removeBulkPricing = (index: number) => {
-    onUpdate({
-      pricing: {
-        ...formData.pricing,
-        bulkPricing: formData.pricing.bulkPricing.filter((_, i) => i !== index)
+        bulkPricing: {
+          ...formData.pricing.bulkPricing,
+          [field]: value
+        }
       }
     });
   };
@@ -52,7 +35,7 @@ export function PricingForm({ formData, onUpdate }: PricingFormProps) {
     });
   };
 
-  const updateSizeVariant = (index: number, field: keyof Listing['pricing']['sizeVariants'][0], value: any) => {
+  const updateSizeVariant = (index: number, field: keyof Listing['pricing']['sizeVariants'][0], value: string | number) => {
     onUpdate({
       pricing: {
         ...formData.pricing,
@@ -145,53 +128,43 @@ export function PricingForm({ formData, onUpdate }: PricingFormProps) {
       {/* Bulk Pricing */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Обемни цени</CardTitle>
-            <Button onClick={addBulkPricing} size="sm">
-              <Plus className="h-4 w-4 mr-2" /> Добави обемна цена
-            </Button>
-          </div>
+          <CardTitle>Обемни цени</CardTitle>
         </CardHeader>
         <CardContent>
-          {formData.pricing.bulkPricing.length === 0 ? (
-            <div className="text-center py-8 border-2 border-dashed border-muted-foreground/25 rounded-lg">
-              <DollarSign className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Няма обемни цени</h3>
-              <p className="text-muted-foreground mb-4">
-                Добавете обемни цени за по-големи количества
-              </p>
-              <Button onClick={addBulkPricing}>
-                <Plus className="h-4 w-4 mr-2" /> Добави обемна цена
-              </Button>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="bulk-10-49">10-49 броя</Label>
+                <Input
+                  id="bulk-10-49"
+                  type="number"
+                  value={formData.pricing.bulkPricing['10-49']}
+                  onChange={(e) => updateBulkPricing('10-49', parseFloat(e.target.value) || 0)}
+                  placeholder="Цена за 10-49 броя"
+                />
+              </div>
+              <div>
+                <Label htmlFor="bulk-50-99">50-99 броя</Label>
+                <Input
+                  id="bulk-50-99"
+                  type="number"
+                  value={formData.pricing.bulkPricing['50-99']}
+                  onChange={(e) => updateBulkPricing('50-99', parseFloat(e.target.value) || 0)}
+                  placeholder="Цена за 50-99 броя"
+                />
+              </div>
+              <div>
+                <Label htmlFor="bulk-100-plus">100+ броя</Label>
+                <Input
+                  id="bulk-100-plus"
+                  type="number"
+                  value={formData.pricing.bulkPricing['100+']}
+                  onChange={(e) => updateBulkPricing('100+', parseFloat(e.target.value) || 0)}
+                  placeholder="Цена за 100+ броя"
+                />
+              </div>
             </div>
-          ) : (
-            <div className="space-y-3">
-              {formData.pricing.bulkPricing.map((bulk, index) => (
-                <div key={index} className="p-4 border rounded-lg">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                    <Input
-                      value={bulk.minQuantity}
-                      onChange={(e) => updateBulkPricing(index, 'minQuantity', parseInt(e.target.value) || 0)}
-                      placeholder="Мин. количество"
-                    />
-                    <Input
-                      value={bulk.maxQuantity}
-                      onChange={(e) => updateBulkPricing(index, 'maxQuantity', parseInt(e.target.value) || 0)}
-                      placeholder="Макс. количество"
-                    />
-                    <Input
-                      value={bulk.price}
-                      onChange={(e) => updateBulkPricing(index, 'price', parseFloat(e.target.value) || 0)}
-                      placeholder="Цена"
-                    />
-                    <Button variant="destructive" size="sm" onClick={() => removeBulkPricing(index)}>
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          </div>
         </CardContent>
       </Card>
 
