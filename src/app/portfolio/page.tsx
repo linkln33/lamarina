@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 
 export default function PortfolioPage() {
+  // Move large data to separate file or database
   const portfolioItems = [
     {
       id: 1,

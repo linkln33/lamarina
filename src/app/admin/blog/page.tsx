@@ -1,38 +1,30 @@
 "use client";
 
-import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Search, Edit, Trash2, Eye, Calendar, User, FileText } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { toast } from 'react-hot-toast';
-import { DatabaseService, BlogPost } from '@/lib/database-service';
+import { useCrudOperations } from '@/hooks/admin/useCrudOperations';
+import { useSearchAndFilter } from '@/hooks/admin/useSearchAndFilter';
+import { BlogPost } from '@/lib/database-service';
 
 export default function BlogPage() {
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const { items: blogPosts, loading, searchTerm, setSearchTerm, createItem, deleteItem } = useCrudOperations<BlogPost>({
+    entityType: 'blogPosts'
+  });
 
-  useEffect(() => {
-    setBlogPosts(DatabaseService.getBlogPosts());
-  }, []);
-
-  const filteredPosts = blogPosts.filter(post => 
-    post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const { filteredItems: filteredPosts } = useSearchAndFilter({
+    items: blogPosts,
+    searchFields: ['title', 'content', 'tags']
+  });
 
   const handleDeletePost = (id: string) => {
-    if (confirm('Сигурни ли сте, че искате да изтриете тази статия?')) {
-      DatabaseService.deleteBlogPost(id);
-      setBlogPosts(DatabaseService.getBlogPosts());
-      toast.success('Статията беше изтрита успешно');
-    }
+    deleteItem(id);
   };
 
   const handleCreatePost = () => {
-    const newPost = DatabaseService.createBlogPost({
+    createItem({
       title: 'Нова статия',
       slug: 'nova-statiya',
       content: 'Съдържание на статията...',
@@ -42,8 +34,6 @@ export default function BlogPage() {
       tags: [],
       status: 'draft'
     });
-    setBlogPosts(DatabaseService.getBlogPosts());
-    toast.success('Статията беше създадена успешно');
   };
 
   return (
