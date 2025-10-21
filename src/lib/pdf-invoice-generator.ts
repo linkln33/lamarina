@@ -1,7 +1,8 @@
 // PDF Invoice Generator for Bulgarian e-commerce
 
 import jsPDF from 'jspdf'
-import { Invoice, InvoiceItem, InvoiceTemplate } from './invoice'
+import { Invoice, InvoiceTemplate } from './invoice'
+import { Order } from './ecommerce'
 
 export class PDFInvoiceGenerator {
   private doc: jsPDF
@@ -262,7 +263,7 @@ export class PDFInvoiceGenerator {
 // Utility functions for invoice generation
 export class InvoicePDFUtils {
   // Generate invoice PDF from order
-  static async generateInvoiceFromOrder(order: any): Promise<jsPDF> {
+  static async generateInvoiceFromOrder(order: Order): Promise<jsPDF> {
     const { InvoiceService, InvoiceTemplateService } = await import('./invoice')
     
     const company = InvoiceService.getDefaultCompany()
@@ -274,7 +275,7 @@ export class InvoicePDFUtils {
   }
 
   // Generate multiple invoices
-  static async generateMultipleInvoices(orders: any[]): Promise<jsPDF[]> {
+  static async generateMultipleInvoices(orders: Order[]): Promise<jsPDF[]> {
     const results: jsPDF[] = []
     
     for (const order of orders) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { InvoiceManager } from '@/components/admin/invoice-manager';
 import { InvoiceForm } from '@/components/admin/invoice-form';
 import { Invoice } from '@/lib/invoice';
@@ -17,10 +17,10 @@ export default function InvoicesPage() {
     setSelectedOrder(null);
   };
 
-  const handleCreateFromOrder = (order: Order) => {
-    setSelectedOrder(order);
-    setIsCreating(true);
-  };
+  // const handleCreateFromOrder = (order: Order) => {
+  //   setSelectedOrder(order);
+  //   setIsCreating(true);
+  // };
 
   const handleCancel = () => {
     setIsCreating(false);

@@ -10,10 +10,6 @@ import {
   Settings, 
   ArrowRight, 
   CheckCircle,
-  Clock,
-  Shield,
-  Award,
-  MapPin,
   Phone,
   Mail
 } from 'lucide-react'

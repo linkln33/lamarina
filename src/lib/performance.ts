@@ -63,8 +63,8 @@ export class PerformanceMonitor {
         const clsObserver = new PerformanceObserver((list) => {
           let clsValue = 0
           for (const entry of list.getEntries()) {
-            if (!(entry as any).hadRecentInput) {
-              clsValue += (entry as any).value
+            if (!(entry as PerformanceEntry & { hadRecentInput?: boolean }).hadRecentInput) {
+              clsValue += (entry as PerformanceEntry & { value: number }).value
             }
           }
           this.metrics.cls = clsValue
@@ -171,7 +171,7 @@ export class PerformanceMonitor {
 
     // Send to analytics (if configured)
     if (typeof window !== 'undefined' && 'gtag' in window) {
-      (window as any).gtag('event', 'performance_metrics', {
+      (window as Window & { gtag?: (command: string, eventName: string, parameters: Record<string, unknown>) => void }).gtag?.('event', 'performance_metrics', {
         lcp: metrics.lcp,
         fid: metrics.fid,
         cls: metrics.cls,
@@ -240,8 +240,8 @@ export class BundleOptimizer {
     fallback?: T
   ): Promise<T> {
     try {
-      const module = await importFn()
-      return module.default
+      const importedModule = await importFn()
+      return importedModule.default
     } catch (error) {
       console.warn('Failed to load component:', error)
       if (fallback) {

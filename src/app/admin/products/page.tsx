@@ -8,14 +8,12 @@ import { Badge } from '@/components/ui/badge'
 import { 
   Plus, 
   Search, 
-  Filter, 
   Edit, 
   Trash2, 
   Eye,
   Package,
   DollarSign,
-  Tag,
-  Image as ImageIcon
+  Tag
 } from 'lucide-react'
 import { Product, PRODUCT_CATEGORIES, formatPrice } from '@/lib/ecommerce'
 import { OptimizedImage } from '@/components/ui/optimized-image'

@@ -13,7 +13,6 @@ import {
   Trash2, 
   Save, 
   X,
-  Euro,
   Calculator
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';

@@ -5,13 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Plus, 
   Search, 
-  Edit, 
   Trash2, 
   Eye, 
   Download, 
@@ -23,7 +21,7 @@ import {
   Building
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { Invoice, InvoiceService, INVOICE_STATUSES, PAYMENT_TERMS } from '@/lib/invoice';
+import { Invoice, InvoiceService } from '@/lib/invoice';
 import { PDFInvoiceGenerator } from '@/lib/pdf-invoice-generator';
 import { Order } from '@/lib/ecommerce';
 
@@ -37,7 +35,7 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [isCreating, setIsCreating] = useState(false);
+  // const [isCreating, setIsCreating] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [isViewing, setIsViewing] = useState(false);
 
@@ -123,34 +121,34 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
     }
   };
 
-  const handleCreateInvoice = async (orderId: string) => {
-    try {
-      setIsCreating(true);
-      
-      // Find the order
-      const order = orders.find(o => o.id === orderId);
-      if (!order) {
-        toast.error('Поръчката не е намерена');
-        return;
-      }
+  // const handleCreateInvoice = async (orderId: string) => {
+  //   try {
+  //     setIsCreating(true);
+  //     
+  //     // Find the order
+  //     const order = orders.find(o => o.id === orderId);
+  //     if (!order) {
+  //       toast.error('Поръчката не е намерена');
+  //       return;
+  //     }
 
-      // Create invoice from order
-      const company = InvoiceService.getDefaultCompany();
-      const invoice = InvoiceService.createInvoiceFromOrder(order, company);
-      
-      // Add to invoices list
-      setInvoices(prev => [invoice, ...prev]);
-      
-      toast.success('Фактурата е създадена успешно');
-      onInvoiceCreated?.(invoice);
-      
-    } catch (error) {
-      console.error('Error creating invoice:', error);
-      toast.error('Грешка при създаване на фактурата');
-    } finally {
-      setIsCreating(false);
-    }
-  };
+  //     // Create invoice from order
+  //     const company = InvoiceService.getDefaultCompany();
+  //     const invoice = InvoiceService.createInvoiceFromOrder(order, company);
+  //     
+  //     // Add to invoices list
+  //     setInvoices(prev => [invoice, ...prev]);
+  //     
+  //     toast.success('Фактурата е създадена успешно');
+  //     onInvoiceCreated?.(invoice);
+  //     
+  //   } catch (error) {
+  //     console.error('Error creating invoice:', error);
+  //     toast.error('Грешка при създаване на фактурата');
+  //   } finally {
+  //     setIsCreating(false);
+  //   }
+  // };
 
   const handleViewInvoice = (invoice: Invoice) => {
     setSelectedInvoice(invoice);

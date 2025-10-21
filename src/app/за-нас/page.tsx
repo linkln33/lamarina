@@ -10,8 +10,7 @@ import {
   Clock, 
   MapPin,
   Phone,
-  Mail,
-  Globe
+  Mail
 } from 'lucide-react'
 
 export const metadata = {

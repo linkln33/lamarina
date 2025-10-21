@@ -138,7 +138,7 @@ export class StorageService {
   }
 
   // List files in bucket
-  static async listFiles(bucket: string, folder?: string): Promise<any[]> {
+  static async listFiles(bucket: string, folder?: string): Promise<MediaFile[]> {
     try {
       const { data, error } = await supabase.storage
         .from(bucket)

@@ -38,6 +38,7 @@ export function GoogleMap({
       try {
         // Check if Google Maps API key is available
         const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+        console.log('Google Maps API Key:', apiKey ? `${apiKey.substring(0, 10)}...` : 'NOT FOUND');
         
         if (!apiKey) {
           setError('Google Maps API key not found. Please add NEXT_PUBLIC_GOOGLE_MAPS_API_KEY to your environment variables.');
@@ -104,7 +105,8 @@ export function GoogleMap({
         }
       } catch (err) {
         console.error('Error loading Google Maps:', err);
-        setError('Failed to load Google Maps. Please check your API key and internet connection.');
+        console.error('API Key being used:', process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
+        setError(`Failed to load Google Maps. Error: ${err instanceof Error ? err.message : 'Unknown error'}. Please check your API key and internet connection.`);
       }
     };
 

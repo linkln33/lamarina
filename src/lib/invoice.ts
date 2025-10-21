@@ -12,6 +12,8 @@ export interface InvoiceItem {
   vatAmount: number
 }
 
+import { Order, CartItem } from './ecommerce';
+
 export interface Invoice {
   id: string
   invoiceNumber: string
@@ -262,13 +264,13 @@ export class InvoiceService {
   }
 
   // Create invoice from order
-  static createInvoiceFromOrder(order: any, company: Invoice['company']): Invoice {
+  static createInvoiceFromOrder(order: Order, company: Invoice['company']): Invoice {
     const invoiceNumber = this.generateInvoiceNumber()
     const issueDate = new Date().toISOString()
     const dueDate = this.calculateDueDate(issueDate, '30_days')
 
     // Convert order items to invoice items
-    const items: InvoiceItem[] = order.items.map((item: any) => ({
+    const items: InvoiceItem[] = order.items.map((item: CartItem) => ({
       id: item.productId,
       name: `Продукт ${item.productId}`, // This should be fetched from product data
       description: 'Описание на продукта',
