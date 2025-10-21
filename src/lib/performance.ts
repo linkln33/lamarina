@@ -48,7 +48,7 @@ export class PerformanceMonitor {
           const entries = list.getEntries()
           entries.forEach((entry) => {
             if (entry.entryType === 'first-input') {
-              this.metrics.fid = entry.processingStart - entry.startTime
+              this.metrics.fid = (entry as PerformanceEntry & { processingStart: number }).processingStart - entry.startTime
             }
           })
         })

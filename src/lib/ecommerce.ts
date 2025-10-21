@@ -109,6 +109,8 @@ export interface Order {
     email: string
     phone: string
     company?: string
+    taxNumber?: string // BULSTAT/UIC
+    vatNumber?: string // VAT номер
     address: {
       street: string
       city: string

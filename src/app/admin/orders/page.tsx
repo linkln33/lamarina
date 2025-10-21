@@ -85,7 +85,8 @@ export default function OrdersPage() {
             isActive: true,
             description: 'Плащане чрез банков превод',
             descriptionEn: 'Payment via bank transfer',
-            instructions: 'Плащането се извършва чрез банков превод на посочените реквизити.'
+            instructions: 'Плащането се извършва чрез банков превод на посочените реквизити.',
+            instructionsEn: 'Payment is made via bank transfer to the specified details.'
           },
           status: 'pending',
           bankDetails: {
@@ -155,7 +156,8 @@ export default function OrdersPage() {
             isActive: true,
             description: 'Плащане чрез банков превод',
             descriptionEn: 'Payment via bank transfer',
-            instructions: 'Плащането се извършва чрез банков превод на посочените реквизити.'
+            instructions: 'Плащането се извършва чрез банков превод на посочените реквизити.',
+            instructionsEn: 'Payment is made via bank transfer to the specified details.'
           },
           status: 'paid',
           bankDetails: {

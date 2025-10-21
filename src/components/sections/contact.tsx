@@ -148,11 +148,15 @@ export function Contact() {
               lng: 24.9521083
             }}
             zoom={15}
-            height="400px"
-            showMarker={true}
-            markerTitle="LAMARINA BG"
-            markerContent="С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово"
-            className="w-full"
+            marker={{
+              position: {
+                lat: 42.0710533,
+                lng: 24.9521083
+              },
+              title: "LAMARINA BG",
+              info: "С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово"
+            }}
+            className="w-full h-96"
           />
         </motion.div>
       </div>

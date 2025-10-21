@@ -80,13 +80,16 @@ export function Checkout({ cart, onOrderComplete, className = '' }: CheckoutProp
   const handleCustomerInfoChange = (field: string, value: string) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.')
-      setCustomerInfo(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof typeof prev],
-          [child]: value
+      setCustomerInfo(prev => {
+        const parentValue = prev[parent as keyof typeof prev] as Record<string, string> || {}
+        return {
+          ...prev,
+          [parent]: {
+            ...parentValue,
+            [child]: value
+          }
         }
-      }))
+      })
     } else {
       setCustomerInfo(prev => ({
         ...prev,
@@ -98,13 +101,16 @@ export function Checkout({ cart, onOrderComplete, className = '' }: CheckoutProp
   const handleShippingInfoChange = (field: string, value: string) => {
     if (field.includes('.')) {
       const [parent, child] = field.split('.')
-      setShippingInfo(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof typeof prev],
-          [child]: value
+      setShippingInfo(prev => {
+        const parentValue = prev[parent as keyof typeof prev] as Record<string, string> || {}
+        return {
+          ...prev,
+          [parent]: {
+            ...parentValue,
+            [child]: value
+          }
         }
-      }))
+      })
     } else {
       setShippingInfo(prev => ({
         ...prev,

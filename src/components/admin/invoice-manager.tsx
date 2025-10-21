@@ -203,7 +203,7 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
     const statusConfig = {
       draft: { label: 'Чернова', variant: 'secondary' as const },
       sent: { label: 'Изпратена', variant: 'default' as const },
-      paid: { label: 'Платена', variant: 'success' as const },
+      paid: { label: 'Платена', variant: 'default' as const },
       overdue: { label: 'Просрочена', variant: 'destructive' as const },
       cancelled: { label: 'Отказана', variant: 'outline' as const }
     };
@@ -222,7 +222,7 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
             Създавайте, управлявайте и изпращайте фактури
           </p>
         </div>
-        <Button onClick={() => setIsCreating(true)}>
+        <Button disabled>
           <Plus className="h-4 w-4 mr-2" />
           Нова фактура
         </Button>
@@ -274,7 +274,7 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
             <p className="text-muted-foreground mb-4">
               {searchTerm ? 'Няма намерени фактури с този търсен термин' : 'Създайте първата си фактура'}
             </p>
-            <Button onClick={() => setIsCreating(true)}>
+            <Button disabled>
               <Plus className="h-4 w-4 mr-2" />
               Създай фактура
             </Button>

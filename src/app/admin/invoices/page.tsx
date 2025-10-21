@@ -9,12 +9,12 @@ import { Order } from '@/lib/ecommerce';
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | undefined>(undefined);
 
   const handleInvoiceCreated = (invoice: Invoice) => {
     setInvoices(prev => [invoice, ...prev]);
     setIsCreating(false);
-    setSelectedOrder(null);
+    setSelectedOrder(undefined);
   };
 
   // const handleCreateFromOrder = (order: Order) => {
@@ -24,7 +24,7 @@ export default function InvoicesPage() {
 
   const handleCancel = () => {
     setIsCreating(false);
-    setSelectedOrder(null);
+    setSelectedOrder(undefined);
   };
 
   if (isCreating) {

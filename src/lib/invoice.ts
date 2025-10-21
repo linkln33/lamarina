@@ -3,7 +3,7 @@
 export interface InvoiceItem {
   id: string
   name: string
-  description?: string
+  description: string
   quantity: number
   unit: string
   unitPrice: number
