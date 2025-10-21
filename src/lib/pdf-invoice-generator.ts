@@ -69,10 +69,15 @@ export class PDFInvoiceGenerator {
     this.doc.text(`№ ${this.invoice.invoiceNumber}`, 150, 40)
     
     // Issue date
-    this.doc.text(`Дата: ${this.formatDate(this.invoice.issueDate)}`, 150, 50)
+    this.doc.text(`Дата на издаване: ${this.formatDate(this.invoice.issueDate)}`, 150, 50)
     
     // Due date
     this.doc.text(`Падеж: ${this.formatDate(this.invoice.dueDate)}`, 150, 60)
+    
+    // Supply date (if available)
+    if (this.invoice.supplyDate) {
+      this.doc.text(`Дата на доставка: ${this.formatDate(this.invoice.supplyDate)}`, 150, 70)
+    }
   }
 
   private addCompanyInfo() {
@@ -91,6 +96,7 @@ export class PDFInvoiceGenerator {
     this.doc.text(company.address.street, 25, 94)
     this.doc.text(`${company.address.postalCode} ${company.address.city}`, 25, 100)
     this.doc.text(`ЕИК: ${company.taxNumber}`, 25, 106)
+    this.doc.text(`ДДС номер: ${company.vatNumber}`, 25, 112)
   }
 
   private addCustomerInfo() {
@@ -245,17 +251,22 @@ export class PDFInvoiceGenerator {
 
   // Generate and download PDF
   public downloadPDF(filename?: string): void {
+    // Generate the PDF content first
+    this.generatePDF()
+    
     const defaultFilename = `factura_${this.invoice.invoiceNumber}.pdf`
     this.doc.save(filename || defaultFilename)
   }
 
   // Generate PDF as blob
   public getPDFBlob(): Blob {
+    this.generatePDF()
     return this.doc.output('blob')
   }
 
   // Generate PDF as data URL
   public getPDFDataURL(): string {
+    this.generatePDF()
     return this.doc.output('dataurlstring')
   }
 }

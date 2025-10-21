@@ -20,6 +20,7 @@ export interface Invoice {
   orderNumber: string
   issueDate: string
   dueDate: string
+  supplyDate?: string // Date of supply (Bulgarian requirement)
   status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
   
   // Company information
@@ -131,12 +132,15 @@ export const PAYMENT_TERMS = [
 export class InvoiceService {
   // Generate invoice number
   static generateInvoiceNumber(): string {
+    // Bulgarian compliant: 10-digit sequential number
     const date = new Date()
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
     const day = String(date.getDate()).padStart(2, '0')
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-    return `INV${year}${month}${day}${random}`
+    const sequence = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
+    
+    // Format: YYYYMMDDXXX (10 digits total)
+    return `${year}${month}${day}${sequence}`
   }
 
   // Calculate invoice totals
@@ -250,8 +254,8 @@ export class InvoiceService {
         postalCode: '4000',
         country: 'България'
       },
-      taxNumber: '123456789', // ЕИК
-      vatNumber: 'BG123456789', // VAT номер
+      taxNumber: '123456789', // BULSTAT/UIC (Единен идентификационен код)
+      vatNumber: 'BG123456789', // VAT номер (ДДС номер)
       phone: '+359 888 123 456',
       email: 'info@lamarina.bg',
       website: 'https://lamarina.bg',
