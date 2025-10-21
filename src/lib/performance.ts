@@ -1,4 +1,5 @@
 // Performance monitoring and optimization utilities
+import React from 'react'
 
 export interface PerformanceMetrics {
   lcp?: number // Largest Contentful Paint
@@ -251,11 +252,11 @@ export class BundleOptimizer {
     }
   }
 
-  static createLazyComponent<T>(
+  static createLazyComponent<T extends React.ComponentType<Record<string, unknown>>>(
     importFn: () => Promise<{ default: T }>,
     fallback?: T
   ) {
-    return React.lazy(() => importFn().catch(() => ({ default: fallback || (() => null) })))
+    return React.lazy(() => importFn().catch(() => ({ default: fallback || (() => null) as unknown as T })))
   }
 }
 

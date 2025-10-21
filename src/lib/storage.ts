@@ -148,7 +148,15 @@ export class StorageService {
         throw new Error(`List failed: ${error.message}`)
       }
 
-      return data || []
+      // Transform FileObject[] to MediaFile[]
+      return (data || []).map((file) => ({
+        id: (file.id as string) || (file.name as string),
+        url: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucket}/${folder ? `${folder}/` : ''}${file.name}`,
+        filename: file.name as string,
+        size: (file.metadata as Record<string, unknown>)?.size as number || 0,
+        type: (file.metadata as Record<string, unknown>)?.mimetype as string || 'application/octet-stream',
+        createdAt: file.created_at as string || new Date().toISOString()
+      }))
     } catch (error) {
       console.error('List error:', error)
       return []
