@@ -20,7 +20,7 @@ export default function AdminDashboard() {
     {
       title: 'Портфолио елементи',
       value: '28',
-      icon: Image,
+      icon: ImageIcon,
       change: '+2',
       changeType: 'positive'
     },

@@ -32,11 +32,16 @@ export default function HomepageEditor() {
     toast.success('Съдържанието е запазено успешно!');
   };
 
+
   const updateHero = (updates: Partial<typeof content.hero>) => {
-    setContent(prev => ({
-      ...prev,
-      hero: { ...prev.hero, ...updates }
-    }));
+    const newContent = {
+      ...content,
+      hero: { ...content.hero, ...updates }
+    };
+    setContent(newContent);
+    
+    // Auto-save hero changes immediately
+    CMS.saveHomepageContent(newContent);
   };
 
   const updateServices = (services: typeof content.services) => {
