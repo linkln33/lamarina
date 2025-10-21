@@ -2,6 +2,7 @@
 
 import jsPDF from 'jspdf'
 import { Invoice, InvoiceTemplate } from './invoice'
+import { convertCyrillicToLatin } from './font-loader'
 import { Order } from './ecommerce'
 
 export class PDFInvoiceGenerator {
@@ -17,12 +18,58 @@ export class PDFInvoiceGenerator {
   }
 
   private setupDocument() {
-    // Set font
-    this.doc.setFont('helvetica')
+    // Set up document with proper font support
+    this.setupCyrillicFont()
     
     // Set colors
     this.doc.setDrawColor(30, 64, 175) // Primary color
     this.doc.setTextColor(30, 64, 175)
+  }
+
+  private setupCyrillicFont() {
+    // Set up font for better text handling
+    this.doc.setFont('helvetica')
+    this.doc.setFontSize(10)
+    
+    // Note: For production, you would embed a proper Cyrillic font like this:
+    // this.doc.addFileToVFS('Roboto-Regular.ttf', fontData);
+    // this.doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+    // this.doc.setFont('Roboto');
+  }
+
+  // Add logo to PDF
+  private async addLogo(logoPath: string, x: number, y: number) {
+    try {
+      // For now, we'll use a text-based logo since we need to handle image loading properly
+      // In production, you would load the image and convert to base64
+      this.doc.setFontSize(16)
+      this.doc.setFont('helvetica', 'bold')
+      this.doc.text('LAMARINA BG', x, y)
+      
+      // TODO: Implement proper image loading
+      // const img = new Image();
+      // img.onload = () => {
+      //   const canvas = document.createElement('canvas');
+      //   const ctx = canvas.getContext('2d');
+      //   canvas.width = img.width;
+      //   canvas.height = img.height;
+      //   ctx.drawImage(img, 0, 0);
+      //   const dataURL = canvas.toDataURL('image/png');
+      //   this.doc.addImage(dataURL, 'PNG', x, y, 30, 30);
+      // };
+      // img.src = logoPath;
+    } catch (error) {
+      console.warn('Logo loading failed:', error)
+      // Fallback to text
+      this.doc.setFontSize(16)
+      this.doc.setFont('helvetica', 'bold')
+      this.doc.text('LAMARINA BG', x, y)
+    }
+  }
+
+  // Convert Bulgarian Cyrillic text to Latin for PDF compatibility
+  private convertText(text: string): string {
+    return convertCyrillicToLatin(text)
   }
 
   public generatePDF(): jsPDF {
@@ -40,98 +87,122 @@ export class PDFInvoiceGenerator {
   private addHeader() {
     const { header } = this.template.template
     
-    // Company logo (if available)
-    if (header.logo) {
-      // Add logo logic here
-    }
+    // Company logo placeholder
+    this.doc.setFontSize(16)
+    this.doc.setFont('helvetica', 'bold')
+    this.doc.text('LAMARINA BG Logo', 20, 20)
     
     // Company name
-    this.doc.setFontSize(24)
+    this.doc.setFontSize(14)
     this.doc.setFont('helvetica', 'bold')
-    this.doc.text(header.companyName, 20, 30)
+    this.doc.text(this.convertText('LAMARINA BG ООД'), 20, 30)
     
-    // Company address
+    // Company description
     this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'normal')
-    this.doc.text(header.companyAddress, 20, 40)
+    this.doc.text(this.convertText('Металообработка и покривни системи'), 20, 38)
     
-    // Contact info
-    this.doc.text(header.contactInfo, 20, 50)
+    // Company address
+    this.doc.text(this.convertText('Адрес: Стопански Двор № 2'), 20, 46)
+    this.doc.text(this.convertText('Град: С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово, 4114'), 20, 54)
     
-    // Invoice title
-    this.doc.setFontSize(20)
+    // Company details
+    this.doc.text(this.convertText('ЕИК: 123456789'), 20, 62)
+    this.doc.text(this.convertText('ДДС номер: BG123456789'), 20, 70)
+    this.doc.text(this.convertText('Телефон: +359 888 123 456'), 20, 78)
+    this.doc.text(this.convertText('Имейл: info@lamarina.bg'), 20, 86)
+    
+    // Invoice section
+    this.doc.setFontSize(18)
     this.doc.setFont('helvetica', 'bold')
-    this.doc.text('ФАКТУРА', 150, 30)
+    this.doc.text(this.convertText('ФАКТУРА'), 150, 30)
     
-    // Invoice number
-    this.doc.setFontSize(12)
+    // Invoice details
+    this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'normal')
-    this.doc.text(`№ ${this.invoice.invoiceNumber}`, 150, 40)
+    this.doc.text(this.convertText('Номер на фактурата'), 150, 40)
+    this.doc.setFont('helvetica', 'bold')
+    this.doc.text(this.invoice.invoiceNumber, 150, 48)
     
-    // Issue date
-    this.doc.text(`Дата на издаване: ${this.formatDate(this.invoice.issueDate)}`, 150, 50)
+    this.doc.setFont('helvetica', 'normal')
+    this.doc.text(this.convertText('Дата на издаване'), 150, 58)
+    this.doc.text(this.formatDate(this.invoice.issueDate), 150, 66)
     
-    // Due date
-    this.doc.text(`Падеж: ${this.formatDate(this.invoice.dueDate)}`, 150, 60)
+    this.doc.text(this.convertText('Падеж'), 150, 76)
+    this.doc.text(this.formatDate(this.invoice.dueDate), 150, 84)
     
-    // Supply date (if available)
     if (this.invoice.supplyDate) {
-      this.doc.text(`Дата на доставка: ${this.formatDate(this.invoice.supplyDate)}`, 150, 70)
+      this.doc.text(this.convertText('Дата на доставка'), 150, 94)
+      this.doc.text(this.formatDate(this.invoice.supplyDate), 150, 102)
     }
   }
 
   private addCompanyInfo() {
     const { company } = this.invoice
+    const startY = 120
     
     // Company details box
     this.doc.setDrawColor(200, 200, 200)
-    this.doc.rect(20, 70, 80, 40)
+    this.doc.rect(20, startY, 80, 50)
     
     this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'bold')
-    this.doc.text('Данни за доставчика:', 25, 80)
+    this.doc.text(this.convertText('Данни за доставчика'), 25, startY + 10)
     
     this.doc.setFont('helvetica', 'normal')
-    this.doc.text(company.name, 25, 88)
-    this.doc.text(company.address.street, 25, 94)
-    this.doc.text(`${company.address.postalCode} ${company.address.city}`, 25, 100)
-    this.doc.text(`ЕИК: ${company.taxNumber}`, 25, 106)
-    this.doc.text(`ДДС номер: ${company.vatNumber}`, 25, 112)
+    this.doc.text(this.convertText('LAMARINA BG ООД'), 25, startY + 18)
+    this.doc.text(this.convertText('Стопански Двор № 2'), 25, startY + 26)
+    this.doc.text(this.convertText('С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово, 4114'), 25, startY + 34)
+    this.doc.text(this.convertText('България'), 25, startY + 42)
+    this.doc.text(this.convertText('ЕИК: 123456789'), 25, startY + 50)
+    this.doc.text(this.convertText('ДДС номер: BG123456789'), 25, startY + 58)
+    this.doc.text(this.convertText('тел: +359 888 123 456'), 25, startY + 66)
+    this.doc.text(this.convertText('email: info@lamarina.bg'), 25, startY + 74)
   }
 
   private addCustomerInfo() {
     const { customer } = this.invoice
+    const startY = 120
     
     // Customer details box
     this.doc.setDrawColor(200, 200, 200)
-    this.doc.rect(110, 70, 80, 40)
+    this.doc.rect(110, startY, 80, 50)
     
     this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'bold')
-    this.doc.text('Данни за получателя:', 115, 80)
+    this.doc.text(this.convertText('Данни за получателя'), 115, startY + 10)
     
     this.doc.setFont('helvetica', 'normal')
-    this.doc.text(customer.name, 115, 88)
-    if (customer.company) {
-      this.doc.text(customer.company, 115, 94)
-    }
-    this.doc.text(customer.address.street, 115, 100)
-    this.doc.text(`${customer.address.postalCode} ${customer.address.city}`, 115, 106)
+    this.doc.text(this.convertText('Иван Петров'), 115, startY + 18)
+    this.doc.text(this.convertText('Строителна фирма "Петров" ООД'), 115, startY + 26)
+    this.doc.text(this.convertText('ул. Витоша 15'), 115, startY + 34)
+    this.doc.text(this.convertText('София, 1000'), 115, startY + 42)
+    this.doc.text(this.convertText('България'), 115, startY + 50)
+    this.doc.text(this.convertText('ЕИК: 987654321'), 115, startY + 58)
+    this.doc.text(this.convertText('ДДС номер: BG987654321'), 115, startY + 66)
+    this.doc.text(this.convertText('тел: +359 888 987 654'), 115, startY + 74)
+    this.doc.text(this.convertText('email: ivan.petrov@example.com'), 115, startY + 82)
   }
 
   private addInvoiceDetails() {
+    const startY = 190
+    
     // Invoice details section
-    this.doc.setFontSize(12)
+    this.doc.setFontSize(10)
+    this.doc.setFont('helvetica', 'normal')
+    this.doc.text(this.convertText('Поръчка №'), 20, startY)
     this.doc.setFont('helvetica', 'bold')
-    this.doc.text('Детайли за фактурата:', 20, 130)
+    this.doc.text(this.invoice.orderNumber, 20, startY + 8)
     
     this.doc.setFont('helvetica', 'normal')
-    this.doc.text(`Поръчка №: ${this.invoice.orderNumber}`, 20, 140)
-    this.doc.text(`Статус: ${this.getStatusText(this.invoice.status)}`, 20, 150)
+    this.doc.text(this.convertText('Статус'), 20, startY + 18)
+    this.doc.setFont('helvetica', 'bold')
+    this.doc.text(this.convertText(this.getStatusText(this.invoice.status)), 20, startY + 26)
     
-    if (this.invoice.notes) {
-      this.doc.text(`Бележки: ${this.invoice.notes}`, 20, 160)
-    }
+    this.doc.setFont('helvetica', 'normal')
+    this.doc.text(this.convertText('Условия за плащане'), 20, startY + 36)
+    this.doc.setFont('helvetica', 'bold')
+    this.doc.text(this.convertText('30 дни'), 20, startY + 44)
   }
 
   private addItemsTable() {
@@ -139,18 +210,21 @@ export class PDFInvoiceGenerator {
     
     // Table header
     this.doc.setFillColor(240, 240, 240)
-    this.doc.rect(20, startY, 170, 15)
+    this.doc.rect(20, startY, 200, 15)
     this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'bold')
     this.doc.setTextColor(0, 0, 0)
     
     // Column headers
-    this.doc.text('№', 25, startY + 10)
-    this.doc.text('Описание', 35, startY + 10)
-    this.doc.text('Кол.', 120, startY + 10)
-    this.doc.text('М.ед.', 135, startY + 10)
-    this.doc.text('Ед.цена', 150, startY + 10)
-    this.doc.text('Общо', 170, startY + 10)
+    this.doc.text(this.convertText('№'), 20, startY + 10)
+    this.doc.text(this.convertText('Описание'), 30, startY + 10)
+    this.doc.text(this.convertText('Кол.'), 100, startY + 10)
+    this.doc.text(this.convertText('М.ед.'), 115, startY + 10)
+    this.doc.text(this.convertText('Ед.цена (BGN)'), 130, startY + 10)
+    this.doc.text(this.convertText('Ед.цена (EUR)'), 160, startY + 10)
+    this.doc.text(this.convertText('ДДС %'), 190, startY + 10)
+    this.doc.text(this.convertText('Общо (BGN)'), 210, startY + 10)
+    this.doc.text(this.convertText('Общо (EUR)'), 240, startY + 10)
     
     // Table rows
     let currentY = startY + 15
@@ -166,16 +240,27 @@ export class PDFInvoiceGenerator {
       // Row background
       if (index % 2 === 0) {
         this.doc.setFillColor(250, 250, 250)
-        this.doc.rect(20, currentY, 170, 15)
+        this.doc.rect(20, currentY, 200, 15)
       }
       
       // Row content
-      this.doc.text((index + 1).toString(), 25, currentY + 10)
-      this.doc.text(item.name, 35, currentY + 10)
-      this.doc.text(item.quantity.toString(), 120, currentY + 10)
-      this.doc.text(item.unit, 135, currentY + 10)
-      this.doc.text(this.formatCurrency(item.unitPrice), 150, currentY + 10)
-      this.doc.text(this.formatCurrency(item.totalPrice), 170, currentY + 10)
+      this.doc.text((index + 1).toString(), 20, currentY + 10)
+      this.doc.text(this.convertText(item.name), 30, currentY + 10)
+      this.doc.text(item.quantity.toString(), 100, currentY + 10)
+      this.doc.text(this.convertText(item.unit), 115, currentY + 10)
+      this.doc.text(this.formatCurrency(item.unitPrice), 130, currentY + 10)
+      this.doc.text(this.formatCurrencyEUR(item.unitPriceEUR), 160, currentY + 10)
+      this.doc.text(`${item.vatRate}%`, 190, currentY + 10)
+      this.doc.text(this.formatCurrency(item.totalPrice), 210, currentY + 10)
+      this.doc.text(this.formatCurrencyEUR(item.totalPriceEUR), 240, currentY + 10)
+      
+      // Add description if available
+      if (item.description) {
+        this.doc.setFontSize(8)
+        this.doc.text(this.convertText(item.description), 30, currentY + 15)
+        this.doc.setFontSize(10)
+        currentY += 8
+      }
       
       currentY += 15
     })
@@ -188,42 +273,68 @@ export class PDFInvoiceGenerator {
     this.doc.setFontSize(12)
     this.doc.setFont('helvetica', 'bold')
     
-    // Subtotal
-    this.doc.text('Междинна сума:', 120, startY)
-    this.doc.text(this.formatCurrency(this.invoice.subtotal), 170, startY)
+    // Subtotal BGN
+    this.doc.text(this.convertText('Междинна сума (BGN):'), 120, startY)
+    this.doc.text(this.formatCurrency(this.invoice.subtotal), 190, startY)
     
-    // VAT
-    this.doc.text('ДДС (20%):', 120, startY + 10)
-    this.doc.text(this.formatCurrency(this.invoice.vatAmount), 170, startY + 10)
+    // Subtotal EUR
+    this.doc.text(this.convertText('Междинна сума (EUR):'), 120, startY + 10)
+    this.doc.text(this.formatCurrencyEUR(this.invoice.subtotalEUR), 190, startY + 10)
     
-    // Total
+    // VAT BGN
+    this.doc.text(this.convertText('ДДС (20%) BGN:'), 120, startY + 20)
+    this.doc.text(this.formatCurrency(this.invoice.vatAmount), 190, startY + 20)
+    
+    // VAT EUR
+    this.doc.text(this.convertText('ДДС (20%) EUR:'), 120, startY + 30)
+    this.doc.text(this.formatCurrencyEUR(this.invoice.vatAmountEUR), 190, startY + 30)
+    
+    // Total BGN
     this.doc.setFontSize(14)
-    this.doc.text('ОБЩО:', 120, startY + 25)
-    this.doc.text(this.formatCurrency(this.invoice.total), 170, startY + 25)
+    this.doc.text(this.convertText('ОБЩО (BGN):'), 120, startY + 45)
+    this.doc.text(this.formatCurrency(this.invoice.total), 190, startY + 45)
     
-    // Currency
+    // Total EUR
+    this.doc.text(this.convertText('ОБЩО (EUR):'), 120, startY + 55)
+    this.doc.text(this.formatCurrencyEUR(this.invoice.totalEUR), 190, startY + 55)
+    
+    // Exchange rate
     this.doc.setFontSize(10)
     this.doc.setFont('helvetica', 'normal')
-    this.doc.text('Валута: BGN', 120, startY + 35)
+    this.doc.text(this.convertText(`Курс: 1 EUR = ${this.invoice.exchangeRate} BGN`), 120, startY + 70)
   }
 
   private addFooter() {
-    const { footer } = this.template.template
+    const startY = 350
     
-    // Footer line
-    this.doc.setDrawColor(200, 200, 200)
-    this.doc.line(20, 270, 190, 270)
+    // Notes section
+    this.doc.setFontSize(10)
+    this.doc.setFont('helvetica', 'bold')
+    this.doc.text(this.convertText('Бележки'), 20, startY)
     
-    // Footer content
-    this.doc.setFontSize(8)
     this.doc.setFont('helvetica', 'normal')
-    this.doc.setTextColor(100, 100, 100)
-    
-    this.doc.text(footer.terms, 20, 280)
-    this.doc.text(footer.bankDetails, 20, 285)
-    if (footer.additionalInfo) {
-      this.doc.text(footer.additionalInfo, 20, 290)
+    if (this.invoice.notes) {
+      this.doc.text(this.convertText(this.invoice.notes), 20, startY + 10)
+    } else {
+      this.doc.text(this.convertText('Доставката се извършва в срок от 14 дни от потвърждаването на поръчката.'), 20, startY + 10)
     }
+    
+    // Bank details
+    this.doc.setFont('helvetica', 'bold')
+    this.doc.text(this.convertText('Банкови данни:'), 20, startY + 30)
+    
+    this.doc.setFont('helvetica', 'normal')
+    this.doc.text(this.convertText('УниКредит Булбанк АД'), 20, startY + 40)
+    this.doc.text(this.convertText('IBAN: BG18UNCR70001523123123'), 20, startY + 50)
+    this.doc.text(this.convertText('SWIFT: UNCRBGSF'), 20, startY + 60)
+    
+    // Payment terms
+    this.doc.setFont('helvetica', 'bold')
+    this.doc.text(this.convertText('Условия за плащане:'), 20, startY + 80)
+    
+    this.doc.setFont('helvetica', 'normal')
+    this.doc.text(this.convertText('Плащането се извършва в срок от 30 дни от датата на фактурата.'), 20, startY + 90)
+    this.doc.text(this.convertText('При забавяне на плащането се начислява лихва съгласно действащото законодателство.'), 20, startY + 100)
   }
 
   private formatDate(date: string): string {
@@ -238,6 +349,14 @@ export class PDFInvoiceGenerator {
     }).format(amount)
   }
 
+  private formatCurrencyEUR(amount: number): string {
+    return new Intl.NumberFormat('en-EU', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2
+    }).format(amount)
+  }
+
   private getStatusText(status: string): string {
     const statusMap: Record<string, string> = {
       draft: 'Чернова',
@@ -246,7 +365,7 @@ export class PDFInvoiceGenerator {
       overdue: 'Просрочена',
       cancelled: 'Отказана'
     }
-    return statusMap[status] || status
+    return this.convertText(statusMap[status] || status)
   }
 
   // Generate and download PDF

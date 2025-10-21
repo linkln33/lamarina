@@ -1,12 +1,13 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Package, 
   FileText, 
-  Image, 
+  Image as ImageIcon, 
   Users, 
   Settings,
   Wrench,
@@ -32,7 +33,7 @@ const getNavigation = (t: (key: string) => string) => [
   { name: t('admin.orders'), href: '/admin/orders', icon: ShoppingCart },
   { name: t('admin.invoices'), href: '/admin/invoices', icon: Receipt },
   { name: t('admin.blog'), href: '/admin/blog', icon: FileText },
-  { name: t('admin.portfolio'), href: '/admin/portfolio', icon: Image },
+  { name: t('admin.portfolio'), href: '/admin/portfolio', icon: ImageIcon },
   { name: t('admin.users'), href: '/admin/users', icon: Users },
   { name: t('admin.pages'), href: '/admin/pages', icon: Globe },
   { name: t('admin.analytics'), href: '/admin/analytics', icon: BarChart3 },
@@ -75,9 +76,15 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between px-4 h-16 border-b border-border">
-            <div className="flex items-center space-x-2">
-              <div className="p-2 bg-primary rounded-lg">
-                <Wrench className="h-6 w-6 text-primary-foreground" />
+            <div className="flex items-center space-x-3">
+              <div className="relative w-10 h-10">
+                <Image
+                  src="/logo.png"
+                  alt="LAMARINA BG Logo"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
               </div>
               <span className="text-xl font-bold text-foreground">LAMARINA BG</span>
             </div>

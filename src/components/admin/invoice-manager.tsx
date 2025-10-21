@@ -21,28 +21,30 @@ import {
   Building
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { Invoice, InvoiceService } from '@/lib/invoice';
-import { PDFInvoiceGenerator } from '@/lib/pdf-invoice-generator';
+import { Invoice, InvoiceService, PAYMENT_TERMS } from '@/lib/invoice';
+import { PDFInvoiceGeneratorHTML } from '@/lib/pdf-invoice-generator-html';
 import { Order } from '@/lib/ecommerce';
 
 interface InvoiceManagerProps {
+  invoices?: Invoice[];
   orders?: Order[];
   onInvoiceCreated?: (invoice: Invoice) => void;
 }
 
-export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManagerProps) {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
+export function InvoiceManager({ invoices: propInvoices = [], orders = [], onInvoiceCreated }: InvoiceManagerProps) {
+  const [invoices, setInvoices] = useState<Invoice[]>(propInvoices);
+  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>(propInvoices);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   // const [isCreating, setIsCreating] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [isViewing, setIsViewing] = useState(false);
 
-  // Load invoices on component mount
+  // Update local state when propInvoices changes
   useEffect(() => {
-    loadInvoices();
-  }, []);
+    setInvoices(propInvoices);
+    setFilteredInvoices(propInvoices);
+  }, [propInvoices]);
 
   // Filter invoices based on search and status
   useEffect(() => {
@@ -63,63 +65,6 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
     setFilteredInvoices(filtered);
   }, [invoices, searchTerm, statusFilter]);
 
-  const loadInvoices = async () => {
-    try {
-      // In a real app, this would fetch from the database
-      const mockInvoices: Invoice[] = [
-        {
-          id: '1',
-          invoiceNumber: 'INV20241201001',
-          orderNumber: 'ORD001',
-          issueDate: new Date().toISOString(),
-          dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-          status: 'sent',
-          company: InvoiceService.getDefaultCompany(),
-          customer: {
-            name: 'Иван Петров',
-            company: 'Петров и Син ООД',
-            address: {
-              street: 'ул. Витоша 15',
-              city: 'София',
-              postalCode: '1000',
-              country: 'България'
-            },
-            taxNumber: '987654321',
-            vatNumber: 'BG987654321',
-            phone: '+359 888 999 888',
-            email: 'ivan@petrov.bg'
-          },
-          items: [
-            {
-              id: '1',
-              name: 'Ламарина за покрив',
-              description: 'Поцинкована ламарина 0.5мм',
-              quantity: 100,
-              unit: 'кв.м',
-              unitPrice: 25.50,
-              totalPrice: 2550.00,
-              vatRate: 20,
-              vatAmount: 510.00
-            }
-          ],
-          subtotal: 2550.00,
-          vatAmount: 510.00,
-          total: 3060.00,
-          currency: 'BGN',
-          paymentTerms: '30_days',
-          notes: 'Доставка до 7 дни',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          createdBy: 'admin'
-        }
-      ];
-      
-      setInvoices(mockInvoices);
-    } catch (error) {
-      console.error('Error loading invoices:', error);
-      toast.error('Грешка при зареждане на фактурите');
-    }
-  };
 
   // const handleCreateInvoice = async (orderId: string) => {
   //   try {
@@ -157,11 +102,8 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
 
   const handleDownloadInvoice = async (invoice: Invoice) => {
     try {
-      const { InvoiceTemplateService } = await import('@/lib/invoice');
-      const template = InvoiceTemplateService.getDefaultTemplate();
-      const generator = new PDFInvoiceGenerator(invoice, template);
-      
-      generator.downloadPDF();
+      const generator = new PDFInvoiceGeneratorHTML(invoice);
+      await generator.downloadPDF(`invoice-${invoice.invoiceNumber}.pdf`);
       toast.success('Фактурата е изтеглена');
     } catch (error) {
       console.error('Error downloading invoice:', error);
@@ -365,61 +307,235 @@ export function InvoiceManager({ orders = [], onInvoiceCreated }: InvoiceManager
       {/* Invoice Preview Modal */}
       {isViewing && selectedInvoice && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold">Преглед на фактура</h2>
-              <Button variant="outline" onClick={() => setIsViewing(false)}>
-                Затвори
-              </Button>
+          <div className="bg-white rounded-lg p-6 max-w-6xl max-h-[95vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">Преглед на фактура</h2>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => handleDownloadInvoice(selectedInvoice)}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Изтегли PDF
+                </Button>
+                <Button variant="outline" onClick={() => setIsViewing(false)}>
+                  Затвори
+                </Button>
+              </div>
             </div>
             
-            {/* Invoice Preview Content */}
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <h3 className="font-semibold mb-2">Данни за доставчика</h3>
-                  <p className="text-sm">{selectedInvoice.company.name}</p>
-                  <p className="text-sm">{selectedInvoice.company.address.street}</p>
-                  <p className="text-sm">{selectedInvoice.company.address.city}</p>
+            {/* Professional Invoice Layout */}
+            <div className="bg-white border-2 border-gray-200 rounded-lg p-8 shadow-lg">
+              {/* Invoice Header */}
+              <div className="flex justify-between items-start mb-8">
+                <div className="flex-1">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-16 h-16 bg-white rounded-lg flex items-center justify-center border-2 border-blue-200">
+                      <img 
+                        src="/logo.png" 
+                        alt="LAMARINA BG Logo" 
+                        className="w-12 h-12 object-contain"
+                        onError={(e) => {
+                          // Fallback to text logo if image fails to load
+                          e.currentTarget.style.display = 'none'
+                          e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                        }}
+                      />
+                      <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm hidden">
+                        LM
+                      </div>
+                    </div>
+                    <div>
+                      <h1 className="text-2xl font-bold text-blue-600">{selectedInvoice.company.name}</h1>
+                      <p className="text-sm text-gray-600">Металообработка и покривни системи</p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-sm text-gray-700 space-y-1">
+                    <p><strong>Адрес:</strong> {selectedInvoice.company.address.street}</p>
+                    <p><strong>Град:</strong> {selectedInvoice.company.address.city}, {selectedInvoice.company.address.postalCode}</p>
+                    <p><strong>ЕИК:</strong> {selectedInvoice.company.taxNumber}</p>
+                    <p><strong>ДДС номер:</strong> {selectedInvoice.company.vatNumber}</p>
+                    <p><strong>Телефон:</strong> {selectedInvoice.company.phone}</p>
+                    <p><strong>Имейл:</strong> {selectedInvoice.company.email}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Данни за получателя</h3>
-                  <p className="text-sm">{selectedInvoice.customer.name}</p>
-                  <p className="text-sm">{selectedInvoice.customer.address.street}</p>
-                  <p className="text-sm">{selectedInvoice.customer.address.city}</p>
+                
+                <div className="text-right">
+                  <h2 className="text-3xl font-bold text-blue-600 mb-2">ФАКТУРА</h2>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600">Номер на фактурата</p>
+                    <p className="text-xl font-bold">{selectedInvoice.invoiceNumber}</p>
+                    <p className="text-sm text-gray-600 mt-2">Дата на издаване</p>
+                    <p className="font-semibold">{InvoiceService.formatDate(selectedInvoice.issueDate)}</p>
+                    <p className="text-sm text-gray-600 mt-2">Падеж</p>
+                    <p className="font-semibold">{InvoiceService.formatDate(selectedInvoice.dueDate)}</p>
+                    {selectedInvoice.supplyDate && (
+                      <>
+                        <p className="text-sm text-gray-600 mt-2">Дата на доставка</p>
+                        <p className="font-semibold">{InvoiceService.formatDate(selectedInvoice.supplyDate)}</p>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-              
-              <div>
-                <h3 className="font-semibold mb-2">Артикули</h3>
+
+              {/* Customer Information */}
+              <div className="grid grid-cols-2 gap-8 mb-8">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-bold text-lg mb-3 text-blue-600">Данни за доставчика</h3>
+                  <div className="text-sm space-y-1">
+                    <p><strong>{selectedInvoice.company.name}</strong></p>
+                    <p>{selectedInvoice.company.address.street}</p>
+                    <p>{selectedInvoice.company.address.city}, {selectedInvoice.company.address.postalCode}</p>
+                    <p>{selectedInvoice.company.address.country}</p>
+                    <p>ЕИК: {selectedInvoice.company.taxNumber}</p>
+                    <p>ДДС номер: {selectedInvoice.company.vatNumber}</p>
+                    <p>тел: {selectedInvoice.company.phone}</p>
+                    <p>email: {selectedInvoice.company.email}</p>
+                  </div>
+                </div>
+                
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <h3 className="font-bold text-lg mb-3 text-blue-600">Данни за получателя</h3>
+                  <div className="text-sm space-y-1">
+                    <p><strong>{selectedInvoice.customer.name}</strong></p>
+                    {selectedInvoice.customer.company && <p>{selectedInvoice.customer.company}</p>}
+                    <p>{selectedInvoice.customer.address.street}</p>
+                    <p>{selectedInvoice.customer.address.city}, {selectedInvoice.customer.address.postalCode}</p>
+                    <p>{selectedInvoice.customer.address.country}</p>
+                    {selectedInvoice.customer.taxNumber && <p>ЕИК: {selectedInvoice.customer.taxNumber}</p>}
+                    {selectedInvoice.customer.vatNumber && <p>ДДС номер: {selectedInvoice.customer.vatNumber}</p>}
+                    {selectedInvoice.customer.phone && <p>тел: {selectedInvoice.customer.phone}</p>}
+                    {selectedInvoice.customer.email && <p>email: {selectedInvoice.customer.email}</p>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Invoice Details */}
+              <div className="mb-6">
+                <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-600">Поръчка №</p>
+                    <p className="font-semibold">{selectedInvoice.orderNumber}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Статус</p>
+                    <p className="font-semibold">{getStatusBadge(selectedInvoice.status)}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Условия за плащане</p>
+                    <p className="font-semibold">{PAYMENT_TERMS.find(t => t.value === selectedInvoice.paymentTerms)?.label || '30 дни'}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Items Table */}
+              <div className="mb-8">
+                <h3 className="font-bold text-lg mb-4 text-blue-600">Артикули</h3>
                 <div className="border rounded-lg overflow-hidden">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-blue-600 text-white">
                       <tr>
-                        <th className="px-4 py-2 text-left">Описание</th>
-                        <th className="px-4 py-2 text-left">Кол.</th>
-                        <th className="px-4 py-2 text-left">Ед.цена</th>
-                        <th className="px-4 py-2 text-left">Общо</th>
+                        <th className="px-4 py-3 text-left">№</th>
+                        <th className="px-4 py-3 text-left">Описание</th>
+                        <th className="px-4 py-3 text-center">Кол.</th>
+                        <th className="px-4 py-3 text-center">М.ед.</th>
+                        <th className="px-4 py-3 text-right">Ед.цена (BGN)</th>
+                        <th className="px-4 py-3 text-right">Ед.цена (EUR)</th>
+                        <th className="px-4 py-3 text-right">ДДС %</th>
+                        <th className="px-4 py-3 text-right">Общо (BGN)</th>
+                        <th className="px-4 py-3 text-right">Общо (EUR)</th>
                       </tr>
                     </thead>
                     <tbody>
                       {selectedInvoice.items.map((item, index) => (
-                        <tr key={index} className="border-t">
-                          <td className="px-4 py-2">{item.name}</td>
-                          <td className="px-4 py-2">{item.quantity}</td>
-                          <td className="px-4 py-2">{InvoiceService.formatCurrency(item.unitPrice)}</td>
-                          <td className="px-4 py-2">{InvoiceService.formatCurrency(item.totalPrice)}</td>
+                        <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                          <td className="px-4 py-3 text-center">{index + 1}</td>
+                          <td className="px-4 py-3">
+                            <div>
+                              <p className="font-medium">{item.name}</p>
+                              {item.description && <p className="text-sm text-gray-600">{item.description}</p>}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-center">{item.quantity}</td>
+                          <td className="px-4 py-3 text-center">{item.unit}</td>
+                          <td className="px-4 py-3 text-right">{InvoiceService.formatCurrency(item.unitPrice)}</td>
+                          <td className="px-4 py-3 text-right">{InvoiceService.formatCurrencyEUR(item.unitPriceEUR)}</td>
+                          <td className="px-4 py-3 text-right">{item.vatRate}%</td>
+                          <td className="px-4 py-3 text-right font-semibold">{InvoiceService.formatCurrency(item.totalPrice)}</td>
+                          <td className="px-4 py-3 text-right font-semibold">{InvoiceService.formatCurrencyEUR(item.totalPriceEUR)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               </div>
-              
-              <div className="text-right">
-                <p className="text-lg font-semibold">
-                  Общо: {InvoiceService.formatCurrency(selectedInvoice.total)}
-                </p>
+
+              {/* Totals Section */}
+              <div className="flex justify-end mb-8">
+                <div className="w-80">
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Междинна сума (BGN):</span>
+                        <span className="font-semibold">{InvoiceService.formatCurrency(selectedInvoice.subtotal)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Междинна сума (EUR):</span>
+                        <span className="font-semibold">{InvoiceService.formatCurrencyEUR(selectedInvoice.subtotalEUR)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">ДДС (20%) BGN:</span>
+                        <span className="font-semibold">{InvoiceService.formatCurrency(selectedInvoice.vatAmount)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">ДДС (20%) EUR:</span>
+                        <span className="font-semibold">{InvoiceService.formatCurrencyEUR(selectedInvoice.vatAmountEUR)}</span>
+                      </div>
+                      <div className="border-t pt-2">
+                        <div className="flex justify-between text-lg font-bold text-blue-600">
+                          <span>ОБЩО (BGN):</span>
+                          <span>{InvoiceService.formatCurrency(selectedInvoice.total)}</span>
+                        </div>
+                        <div className="flex justify-between text-lg font-bold text-blue-600">
+                          <span>ОБЩО (EUR):</span>
+                          <span>{InvoiceService.formatCurrencyEUR(selectedInvoice.totalEUR)}</span>
+                        </div>
+                        <div className="text-sm text-gray-600 text-right">
+                          Курс: 1 EUR = {selectedInvoice.exchangeRate} BGN
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes and Footer */}
+              {selectedInvoice.notes && (
+                <div className="mb-6">
+                  <h3 className="font-bold text-lg mb-2 text-blue-600">Бележки</h3>
+                  <div className="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400">
+                    <p className="text-sm">{selectedInvoice.notes}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Footer Information */}
+              <div className="border-t pt-6 text-xs text-gray-600">
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <p><strong>Банкови данни:</strong></p>
+                    <p>{selectedInvoice.company.bankDetails?.bank}</p>
+                    <p>IBAN: {selectedInvoice.company.bankDetails?.iban}</p>
+                    <p>SWIFT: {selectedInvoice.company.bankDetails?.swift}</p>
+                  </div>
+                  <div>
+                    <p><strong>Условия за плащане:</strong></p>
+                    <p>Плащането се извършва в срок от {PAYMENT_TERMS.find(t => t.value === selectedInvoice.paymentTerms)?.label || '30 дни'} от датата на фактурата.</p>
+                    <p>При забавяне на плащането се начислява лихва съгласно действащото законодателство.</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

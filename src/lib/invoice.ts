@@ -7,9 +7,12 @@ export interface InvoiceItem {
   quantity: number
   unit: string
   unitPrice: number
+  unitPriceEUR: number // Price in EUR
   totalPrice: number
+  totalPriceEUR: number // Total price in EUR
   vatRate: number // VAT rate in percentage (20% for Bulgaria)
   vatAmount: number
+  vatAmountEUR: number // VAT amount in EUR
 }
 
 import { Order, CartItem } from './ecommerce';
@@ -63,9 +66,13 @@ export interface Invoice {
   // Invoice details
   items: InvoiceItem[]
   subtotal: number
+  subtotalEUR: number // Subtotal in EUR
   vatAmount: number
+  vatAmountEUR: number // VAT amount in EUR
   total: number
+  totalEUR: number // Total in EUR
   currency: 'BGN'
+  exchangeRate: number // EUR to BGN exchange rate
   
   // Payment terms
   paymentTerms: string
@@ -146,17 +153,26 @@ export class InvoiceService {
   // Calculate invoice totals
   static calculateTotals(items: InvoiceItem[]): {
     subtotal: number
+    subtotalEUR: number
     vatAmount: number
+    vatAmountEUR: number
     total: number
+    totalEUR: number
   } {
     const subtotal = items.reduce((sum, item) => sum + item.totalPrice, 0)
+    const subtotalEUR = items.reduce((sum, item) => sum + item.totalPriceEUR, 0)
     const vatAmount = items.reduce((sum, item) => sum + item.vatAmount, 0)
+    const vatAmountEUR = items.reduce((sum, item) => sum + item.vatAmountEUR, 0)
     const total = subtotal + vatAmount
+    const totalEUR = subtotalEUR + vatAmountEUR
 
     return {
       subtotal: Math.round(subtotal * 100) / 100,
+      subtotalEUR: Math.round(subtotalEUR * 100) / 100,
       vatAmount: Math.round(vatAmount * 100) / 100,
-      total: Math.round(total * 100) / 100
+      vatAmountEUR: Math.round(vatAmountEUR * 100) / 100,
+      total: Math.round(total * 100) / 100,
+      totalEUR: Math.round(totalEUR * 100) / 100
     }
   }
 
@@ -172,6 +188,32 @@ export class InvoiceService {
       currency: 'BGN',
       minimumFractionDigits: 2
     }).format(amount)
+  }
+
+  // Format Euro currency
+  static formatCurrencyEUR(amount: number): string {
+    return new Intl.NumberFormat('en-EU', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 2
+    }).format(amount)
+  }
+
+  // Convert EUR to BGN (approximate rate: 1 EUR = 1.95583 BGN)
+  static convertEURToBGN(eurAmount: number): number {
+    const exchangeRate = 1.95583 // Fixed rate for consistency
+    return eurAmount * exchangeRate
+  }
+
+  // Convert BGN to EUR
+  static convertBGNToEUR(bgnAmount: number): number {
+    const exchangeRate = 1.95583
+    return bgnAmount / exchangeRate
+  }
+
+  // Get current exchange rate
+  static getExchangeRate(): number {
+    return 1.95583 // Fixed rate for consistency
   }
 
   // Format Bulgarian date
@@ -249,9 +291,9 @@ export class InvoiceService {
     return {
       name: 'LAMARINA BG ООД',
       address: {
-        street: 'ул. Индустриална 10',
-        city: 'Пловдив',
-        postalCode: '4000',
+        street: 'Стопански Двор № 2',
+        city: 'С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово',
+        postalCode: '4114',
         country: 'България'
       },
       taxNumber: '123456789', // BULSTAT/UIC (Единен идентификационен код)
@@ -274,17 +316,28 @@ export class InvoiceService {
     const dueDate = this.calculateDueDate(issueDate, '30_days')
 
     // Convert order items to invoice items
-    const items: InvoiceItem[] = order.items.map((item: CartItem) => ({
-      id: item.productId,
-      name: `Продукт ${item.productId}`, // This should be fetched from product data
-      description: 'Описание на продукта',
-      quantity: item.quantity,
-      unit: 'бр',
-      unitPrice: item.price,
-      totalPrice: item.price * item.quantity,
-      vatRate: VAT_RATES.STANDARD,
-      vatAmount: this.calculateVAT(item.price * item.quantity, VAT_RATES.STANDARD)
-    }))
+    const exchangeRate = this.getExchangeRate()
+    const items: InvoiceItem[] = order.items.map((item: CartItem) => {
+      const totalPrice = item.price * item.quantity
+      const totalPriceEUR = this.convertBGNToEUR(totalPrice)
+      const vatAmount = this.calculateVAT(totalPrice, VAT_RATES.STANDARD)
+      const vatAmountEUR = this.convertBGNToEUR(vatAmount)
+      
+      return {
+        id: item.productId,
+        name: `Продукт ${item.productId}`, // This should be fetched from product data
+        description: 'Описание на продукта',
+        quantity: item.quantity,
+        unit: 'бр',
+        unitPrice: item.price,
+        unitPriceEUR: this.convertBGNToEUR(item.price),
+        totalPrice: totalPrice,
+        totalPriceEUR: totalPriceEUR,
+        vatRate: VAT_RATES.STANDARD,
+        vatAmount: vatAmount,
+        vatAmountEUR: vatAmountEUR
+      }
+    })
 
     const totals = this.calculateTotals(items)
 
@@ -307,9 +360,13 @@ export class InvoiceService {
       },
       items,
       subtotal: totals.subtotal,
+      subtotalEUR: totals.subtotalEUR,
       vatAmount: totals.vatAmount,
+      vatAmountEUR: totals.vatAmountEUR,
       total: totals.total,
+      totalEUR: totals.totalEUR,
       currency: 'BGN',
+      exchangeRate: exchangeRate,
       paymentTerms: '30_days',
       notes: order.notes,
       createdAt: new Date().toISOString(),
@@ -329,8 +386,9 @@ export class InvoiceTemplateService {
       isDefault: true,
       template: {
         header: {
+          logo: '/logo.png',
           companyName: 'LAMARINA BG ООД',
-          companyAddress: 'ул. Индустриална 10, 4000 Пловдив, България',
+          companyAddress: 'Стопански Двор № 2, С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово',
           contactInfo: 'тел: +359 888 123 456 | email: info@lamarina.bg'
         },
         footer: {
