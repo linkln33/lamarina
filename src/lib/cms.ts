@@ -1,3 +1,5 @@
+import { cmsEvents } from './cms-events';
+
 // CMS Data Types
 export interface HeroSection {
   id: string;
@@ -296,6 +298,8 @@ export class CMS {
     
     try {
       localStorage.setItem(CMS_STORAGE_KEY, JSON.stringify(content));
+      // Emit event to notify components of the update
+      cmsEvents.emitCMSUpdate();
     } catch (error) {
       console.error('Error saving CMS data:', error);
     }

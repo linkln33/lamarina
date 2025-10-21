@@ -7,16 +7,76 @@ import { Wrench, ArrowRight, Star, ChevronLeft, ChevronRight } from 'lucide-reac
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { CMS } from '@/lib/cms';
+import { cmsEvents } from '@/lib/cms-events';
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 
 export function Hero() {
   const { t } = useLanguage();
-  const [heroData, setHeroData] = useState(CMS.getHomepageContent().hero);
+  const [heroData, setHeroData] = useState(() => {
+    // Only access CMS data on client side to prevent hydration mismatch
+    if (typeof window !== 'undefined') {
+      return CMS.getHomepageContent().hero;
+    }
+    // Default fallback for server-side rendering
+    return {
+      title: '',
+      subtitle: '',
+      description: '',
+      ctaPrimary: '',
+      ctaSecondary: '',
+      backgroundImage: '',
+      stats: { projects: '', experience: '', clients: '' },
+      features: {
+        equipment: { title: '', description: '' },
+        quality: { title: '', description: '' },
+        speed: { title: '', description: '' }
+      },
+      carousel: { images: [] }
+    };
+  });
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isClient, setIsClient] = useState(false);
+
+  // Set client flag and load real data on mount
+  useEffect(() => {
+    setIsClient(true);
+    const realHeroData = CMS.getHomepageContent().hero;
+    setHeroData(realHeroData);
+  }, []);
 
   useEffect(() => {
-    setHeroData(CMS.getHomepageContent().hero);
-  }, []);
+    const updateHeroData = () => {
+      const newHeroData = CMS.getHomepageContent().hero;
+      setHeroData(newHeroData);
+      // Reset carousel index if needed
+      if (newHeroData.carousel?.images?.length === 0) {
+        setCurrentImageIndex(0);
+      } else if (currentImageIndex >= (newHeroData.carousel?.images?.length || 0)) {
+        setCurrentImageIndex(0);
+      }
+    };
+    
+    // Initial load
+    updateHeroData();
+    
+    // Subscribe to CMS updates
+    const unsubscribe = cmsEvents.subscribeToAllUpdates(updateHeroData);
+    
+    // Also listen to storage events as backup
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'lamarina-cms-data') {
+        updateHeroData();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      unsubscribe();
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [currentImageIndex]);
 
   const nextImage = useCallback(() => {
     if (heroData.carousel?.images?.length > 0) {
@@ -74,37 +134,62 @@ export function Hero() {
               </Badge>
               
                   <h1 className="text-4xl md:text-6xl font-bold text-white leading-tight">
-                    {heroData.title}
-                    <span className="block text-blue-400">{heroData.subtitle}</span>
+                    {t('hero.title')}
+                    <span className="block text-blue-400">{t('hero.subtitle')}</span>
                   </h1>
 
                   <p className="text-xl text-slate-300 max-w-lg">
-                    {heroData.description}
+                    {t('hero.description')}
                   </p>
             </div>
 
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg border-2 border-primary-foreground/20 hover:border-primary-foreground/40">
-                    {heroData.ctaPrimary}
+                  <Button 
+                    size="lg" 
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg border-2 border-primary-foreground/20 hover:border-primary-foreground/40"
+                    onClick={() => {
+                      const contactSection = document.querySelector('#contact');
+                      if (contactSection) {
+                        contactSection.scrollIntoView({ 
+                          behavior: 'smooth',
+                          block: 'start'
+                        });
+                      }
+                    }}
+                  >
+                    {t('hero.cta.primary')}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                  <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/20 hover:border-white/40 bg-white/5 backdrop-blur-sm">
-                    {heroData.ctaSecondary}
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="border-white/30 text-white hover:bg-white/20 hover:border-white/40 bg-white/5 backdrop-blur-sm"
+                    onClick={() => {
+                      const contactSection = document.querySelector('#contact');
+                      if (contactSection) {
+                        contactSection.scrollIntoView({ 
+                          behavior: 'smooth',
+                          block: 'start'
+                        });
+                      }
+                    }}
+                  >
+                    {t('hero.cta.secondary')}
                   </Button>
                 </div>
 
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-6 pt-8">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-white">{heroData.stats.projects}</div>
+                    <div className="text-2xl font-bold text-white">500+</div>
                     <div className="text-sm text-slate-400">{t('stats.projects')}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-white">{heroData.stats.experience}</div>
+                    <div className="text-2xl font-bold text-white">30+</div>
                     <div className="text-sm text-slate-400">{t('stats.experience')}</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-white">{heroData.stats.clients}</div>
+                    <div className="text-2xl font-bold text-white">100%</div>
                     <div className="text-sm text-slate-400">{t('stats.clients')}</div>
                   </div>
                 </div>
@@ -121,10 +206,10 @@ export function Hero() {
               <CardContent className="p-0">
                 {/* Carousel Container */}
                 <div className="relative h-96 w-full">
-                  {/* Images */}
-                  <div className="relative h-full overflow-hidden">
-                    {heroData.carousel?.images?.length > 0 ? (
-                      heroData.carousel.images.map((image, index) => (
+                      {/* Images */}
+                      <div className="relative h-full overflow-hidden">
+                        {isClient && heroData.carousel?.images?.length > 0 ? (
+                          heroData.carousel.images.map((image, index) => (
                       <motion.div
                         key={image.id}
                         className={`absolute inset-0 ${
@@ -137,10 +222,12 @@ export function Hero() {
                         }}
                         transition={{ duration: 0.5 }}
                       >
-                        <img
+                        <Image
                           src={image.url}
                           alt={image.alt}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
+                          priority={index === 0}
                         />
                         <div className="absolute inset-0 bg-black/40" />
                         <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -153,15 +240,15 @@ export function Hero() {
                       <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center">
                         <div className="text-center text-white">
                           <Wrench className="h-16 w-16 mx-auto mb-4 text-slate-400" />
-                          <h3 className="text-lg font-semibold mb-2">Професионално оборудване</h3>
-                          <p className="text-sm text-slate-300">Модерни машини за прецизна обработка</p>
+                          <h3 className="text-lg font-semibold mb-2">{t('features.equipment')}</h3>
+                          <p className="text-sm text-slate-300">{t('features.equipment.desc')}</p>
                         </div>
                       </div>
                     )}
                   </div>
 
-                  {/* Navigation Arrows - only show if carousel has images */}
-                  {heroData.carousel?.images?.length > 1 && (
+                      {/* Navigation Arrows - only show if carousel has images */}
+                      {isClient && heroData.carousel?.images?.length > 1 && (
                     <>
                       <Button
                         variant="ghost"
@@ -182,8 +269,8 @@ export function Hero() {
                     </>
                   )}
 
-                  {/* Dots Indicator - only show if carousel has multiple images */}
-                  {heroData.carousel?.images?.length > 1 && (
+                      {/* Dots Indicator - only show if carousel has multiple images */}
+                      {isClient && heroData.carousel?.images?.length > 1 && (
                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
                       {heroData.carousel.images.map((_, index) => (
                         <button

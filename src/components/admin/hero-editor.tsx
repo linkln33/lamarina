@@ -1,13 +1,15 @@
 "use client";
 
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Trash2, Image } from 'lucide-react';
+import { ImageIcon } from 'lucide-react';
 import { HeroSection } from '@/lib/cms';
+import { EnhancedImageUpload, UploadedImage } from '@/components/ui/enhanced-image-upload';
 
 interface HeroEditorProps {
   hero: HeroSection;
@@ -33,30 +35,6 @@ export function HeroEditor({ hero, onUpdate }: HeroEditorProps) {
     });
   };
 
-  // Carousel management functions
-  const addCarouselImage = () => {
-    const newImage = {
-      id: Date.now().toString(),
-      url: '/api/placeholder/800/600',
-      alt: 'Ново изображение',
-      title: 'Заглавие на изображението'
-    };
-    const currentImages = hero.carousel?.images || [];
-    updateField('carousel', { images: [...currentImages, newImage] });
-  };
-
-  const removeCarouselImage = (id: string) => {
-    const currentImages = hero.carousel?.images || [];
-    updateField('carousel', { images: currentImages.filter(img => img.id !== id) });
-  };
-
-  const updateCarouselImage = (id: string, field: string, value: string) => {
-    const currentImages = hero.carousel?.images || [];
-    const updatedImages = currentImages.map(img => 
-      img.id === id ? { ...img, [field]: value } : img
-    );
-    updateField('carousel', { images: updatedImages });
-  };
 
   return (
     <div className="space-y-6">
@@ -286,96 +264,31 @@ export function HeroEditor({ hero, onUpdate }: HeroEditorProps) {
       {/* Carousel Images */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
             <CardTitle>Carousel изображения</CardTitle>
-            <Button onClick={addCarouselImage} size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Добави изображение
-            </Button>
-          </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {hero.carousel?.images?.map((image, index) => (
-              <div key={image.id} className="p-4 border rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <Image className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Изображение #{index + 1}</span>
-                  </div>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => removeCarouselImage(image.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor={`carousel-url-${image.id}`}>URL на изображение</Label>
-                    <Input
-                      id={`carousel-url-${image.id}`}
-                      value={image.url}
-                      onChange={(e) => updateCarouselImage(image.id, 'url', e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor={`carousel-title-${image.id}`}>Заглавие</Label>
-                    <Input
-                      id={`carousel-title-${image.id}`}
-                      value={image.title}
-                      onChange={(e) => updateCarouselImage(image.id, 'title', e.target.value)}
-                      placeholder="Заглавие на изображението"
-                    />
-                  </div>
-                </div>
-                
-                <div className="mt-3">
-                  <Label htmlFor={`carousel-alt-${image.id}`}>Alt текст</Label>
-                  <Input
-                    id={`carousel-alt-${image.id}`}
-                    value={image.alt}
-                    onChange={(e) => updateCarouselImage(image.id, 'alt', e.target.value)}
-                    placeholder="Описание на изображението"
-                  />
-                </div>
-
-                {/* Image Preview */}
-                {image.url && (
-                  <div className="mt-3">
-                    <Label>Преглед:</Label>
-                    <div className="mt-2 border rounded-lg overflow-hidden">
-                      <img
-                        src={image.url}
-                        alt={image.alt}
-                        className="w-full h-32 object-cover"
-                        onError={(e) => {
-                          e.currentTarget.src = '/api/placeholder/400/200';
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-            
-            {(!hero.carousel?.images || hero.carousel.images.length === 0) && (
-              <div className="text-center py-8 border-2 border-dashed border-muted-foreground/25 rounded-lg">
-                <Image className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-semibold mb-2">Няма изображения в carousel</h3>
-                <p className="text-muted-foreground mb-4">
-                  Добавете изображения за да създадете carousel
-                </p>
-                <Button onClick={addCarouselImage}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Добави първото изображение
-                </Button>
-              </div>
-            )}
-          </div>
+          <EnhancedImageUpload
+            images={hero.carousel?.images?.map(img => ({
+              id: img.id,
+              url: img.url,
+              alt: img.alt,
+              isPrimary: false,
+              order: 0
+            })) || []}
+            onImagesChange={(uploadedImages: UploadedImage[]) => {
+              const carouselImages = uploadedImages.map(img => ({
+                id: img.id,
+                url: img.url,
+                alt: img.alt,
+                title: img.alt || 'Carousel Image'
+              }));
+              updateField('carousel', { images: carouselImages });
+            }}
+            maxImages={10}
+            bucket="media"
+            folder="hero-carousel"
+            className="w-full"
+          />
         </CardContent>
       </Card>
     </div>

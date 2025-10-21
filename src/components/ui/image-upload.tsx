@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -147,19 +148,19 @@ export function ImageUpload({
     onImagesChange(newImages);
   };
 
-  const reorderImages = (fromIndex: number, toIndex: number) => {
-    const newImages = [...images];
-    const [movedImage] = newImages.splice(fromIndex, 1);
-    newImages.splice(toIndex, 0, movedImage);
-    
-    // Update order indices
-    const reorderedImages = newImages.map((img, index) => ({
-      ...img,
-      order: index
-    }));
-    
-    onImagesChange(reorderedImages);
-  };
+  // const reorderImages = (fromIndex: number, toIndex: number) => {
+  //   const newImages = [...images];
+  //   const [movedImage] = newImages.splice(fromIndex, 1);
+  //   newImages.splice(toIndex, 0, movedImage);
+  //   
+  //   // Update order indices
+  //   const reorderedImages = newImages.map((img, index) => ({
+  //     ...img,
+  //     order: index
+  //   }));
+  //   
+  //   onImagesChange(reorderedImages);
+  // };
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -220,10 +221,11 @@ export function ImageUpload({
             <Card key={image.id} className="relative group">
               <CardContent className="p-0">
                 <div className="relative aspect-video overflow-hidden rounded-t-lg">
-                  <img
+                  <Image
                     src={image.url}
                     alt={image.alt}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                   
                   {/* Primary Badge */}

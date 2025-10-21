@@ -13,7 +13,9 @@ import {
   Clock,
   Shield,
   Award,
-  MapPin
+  MapPin,
+  Phone,
+  Mail
 } from 'lucide-react'
 
 export const metadata = {

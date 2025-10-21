@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import { InvoiceManager } from '@/components/admin/invoice-manager';
 import { InvoiceForm } from '@/components/admin/invoice-form';
 import { Invoice } from '@/lib/invoice';
+import { Order } from '@/lib/ecommerce';
 
 export default function InvoicesPage() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [isCreating, setIsCreating] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const handleInvoiceCreated = (invoice: Invoice) => {
     setInvoices(prev => [invoice, ...prev]);
@@ -16,7 +17,7 @@ export default function InvoicesPage() {
     setSelectedOrder(null);
   };
 
-  const handleCreateFromOrder = (order: any) => {
+  const handleCreateFromOrder = (order: Order) => {
     setSelectedOrder(order);
     setIsCreating(true);
   };

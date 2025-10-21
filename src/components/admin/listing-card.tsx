@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,10 +24,11 @@ export function ListingCard({ listing, onEdit, onDelete }: ListingCardProps) {
     <Card className="flex flex-col">
       <div className="relative aspect-video bg-muted rounded-t-lg overflow-hidden">
         {listing.images.length > 0 ? (
-          <img 
+          <Image 
             src={listing.images.find(img => img.isPrimary)?.url || listing.images[0].url} 
             alt={listing.images.find(img => img.isPrimary)?.alt || listing.title} 
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-muted-foreground">

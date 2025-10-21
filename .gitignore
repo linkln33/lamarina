@@ -26,7 +26,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+# .env*.local (commented out to allow .env.local for Google Maps API)
 .env
 
 # vercel

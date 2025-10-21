@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Phone, Mail } from 'lucide-react';
 import { Listing } from '@/types/listing';
@@ -16,9 +17,11 @@ export function ListingViewer({ listing }: ListingViewerProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {listing.images.map((image) => (
             <div key={image.id} className="relative">
-              <img
+              <Image
                 src={image.url}
                 alt={image.alt}
+                width={400}
+                height={192}
                 className="w-full h-48 object-cover rounded-lg"
               />
               {image.isPrimary && (

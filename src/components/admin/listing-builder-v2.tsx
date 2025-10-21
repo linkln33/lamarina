@@ -13,12 +13,12 @@ import {
   Trash2, 
   Video, 
   Package, 
-  DollarSign,
   Ruler,
   Shield,
   Save,
   X
 } from 'lucide-react';
+import Image from 'next/image';
 import { Listing } from '@/types/listing';
 import { ImageUpload, UploadedImage } from '@/components/ui/image-upload';
 import { SupabaseAdminService } from '@/lib/supabase-admin';
@@ -432,7 +432,7 @@ export function ListingBuilderV2({ listing, onSave, onCancel }: ListingBuilderPr
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {formData.videos.map((video) => (
                     <div key={video.id} className="relative border rounded-lg overflow-hidden">
-                      <img src={video.thumbnail || '/api/placeholder/400/225'} alt={video.title} className="w-full h-32 object-cover" />
+                      <Image src={video.thumbnail || '/api/placeholder/400/225'} alt={video.title} width={400} height={225} className="w-full h-32 object-cover" />
                       <div className="p-2 space-y-2">
                         <div>
                           <Label htmlFor={`video-url-${video.id}`}>URL</Label>

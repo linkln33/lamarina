@@ -1,7 +1,6 @@
 import { Hero } from '@/components/sections/hero';
 import { Services } from '@/components/sections/services';
 import { Portfolio } from '@/components/sections/portfolio';
-import { Blog } from '@/components/sections/blog';
 import { Contact } from '@/components/sections/contact';
 import { Shop } from '@/components/sections/shop';
 import { About } from '@/components/sections/about';

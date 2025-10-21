@@ -15,7 +15,10 @@ import {
   Mail,
   Shield,
   Home,
-  X
+  X,
+  ShoppingCart,
+  ShoppingBag,
+  Receipt
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -25,6 +28,9 @@ const getNavigation = (t: (key: string) => string) => [
   { name: t('admin.dashboard'), href: '/admin', icon: LayoutDashboard },
   { name: t('admin.homepage'), href: '/admin/homepage', icon: Home },
   { name: t('admin.listings'), href: '/admin/listings', icon: Package },
+  { name: t('admin.products'), href: '/admin/products', icon: ShoppingBag },
+  { name: t('admin.orders'), href: '/admin/orders', icon: ShoppingCart },
+  { name: t('admin.invoices'), href: '/admin/invoices', icon: Receipt },
   { name: t('admin.blog'), href: '/admin/blog', icon: FileText },
   { name: t('admin.portfolio'), href: '/admin/portfolio', icon: Image },
   { name: t('admin.users'), href: '/admin/users', icon: Users },

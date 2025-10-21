@@ -8,13 +8,19 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { GoogleMap } from '@/components/ui/google-map';
 
 export function Contact() {
   const { t } = useLanguage();
   
   return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 bg-gradient-to-br from-blue-50/15 to-slate-50/25 dark:from-blue-950/8 dark:to-slate-900/25 relative overflow-hidden">
+      {/* Subtle blue texture overlay */}
+      <div className="absolute inset-0 opacity-15">
+        <div className="absolute inset-0 bg-blue-500/2"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/1 to-transparent"></div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -22,9 +28,6 @@ export function Contact() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <Badge variant="secondary" className="mb-4">
-            {t('contact.title')}
-          </Badge>
           <h2 className="text-4xl font-bold text-foreground mb-4">
             {t('contact.title')}
           </h2>
@@ -91,11 +94,8 @@ export function Contact() {
                   </div>
                   <div>
                     <p className="font-medium text-emerald-800 dark:text-emerald-200">{t('contact.address')}</p>
-                    <p className="text-emerald-700 dark:text-emerald-300">
-                      С. БОЛЯРЦИ п.к.4114<br />
-                      Обл. Пловдивска, Общ. Садово<br />
-                      Стопански Двор № 2<br />
-                      GPS: N 42.0710533, E 24.9521083
+                    <p className="text-emerald-700 dark:text-emerald-300 whitespace-pre-line">
+                      {t('contact.addressDetails')}
                     </p>
                   </div>
                 </div>
@@ -142,21 +142,18 @@ export function Contact() {
           viewport={{ once: true }}
           className="w-full"
         >
-          <div className="h-96 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900 rounded-xl overflow-hidden shadow-lg">
-            <div className="h-full flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-green-500/10" />
-              <div className="text-center z-10">
-                <MapPin className="h-16 w-16 text-primary mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-foreground mb-2">La Marina Location</h3>
-                <p className="text-muted-foreground mb-4">
-                  С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово
-                </p>
-                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-                  <span>GPS: N 42.0710533, E 24.9521083</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <GoogleMap
+            center={{
+              lat: 42.0710533,
+              lng: 24.9521083
+            }}
+            zoom={15}
+            height="400px"
+            showMarker={true}
+            markerTitle="LAMARINA BG"
+            markerContent="С. БОЛЯРЦИ п.к.4114, Обл. Пловдивска, Общ. Садово"
+            className="w-full"
+          />
         </motion.div>
       </div>
     </section>

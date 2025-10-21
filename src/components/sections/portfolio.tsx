@@ -34,8 +34,13 @@ export function Portfolio() {
     }
   ];
   return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-12 bg-gradient-to-br from-blue-50/15 to-slate-50/25 dark:from-blue-950/8 dark:to-slate-900/25 relative overflow-hidden">
+      {/* Subtle blue texture overlay */}
+      <div className="absolute inset-0 opacity-15">
+        <div className="absolute inset-0 bg-blue-500/2"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/1 to-transparent"></div>
+      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -43,9 +48,6 @@ export function Portfolio() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <Badge variant="secondary" className="mb-4">
-            {t('portfolio.title')}
-          </Badge>
           <h2 className="text-4xl font-bold text-foreground mb-4">
             {t('portfolio.title')}
           </h2>

@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, Wrench, ChevronDown } from 'lucide-react';
+import Image from 'next/image';
+import { Menu, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { LanguageToggle } from './language-toggle';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -13,79 +13,81 @@ export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useLanguage();
 
+  const handleNavClick = (href: string) => {
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href);
+      if (element) {
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - 80; // 80px offset for navbar
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+    setIsOpen(false); // Close mobile menu
+  };
+
   const navItems = [
-    { href: '/about', label: t('nav.about') },
-    { href: '/portfolio', label: t('nav.portfolio') },
-    { href: '/services', label: t('nav.services') },
-    { href: '/blog', label: t('nav.blog') },
+    { href: '#about', label: t('nav.about') },
+    { href: '#services', label: t('nav.services') },
+    { href: '#portfolio', label: t('nav.portfolio') },
+    { href: '#news', label: t('nav.news') },
+    { href: '#shop', label: t('nav.shop') },
   ];
 
-  const productCategories = [
-    { href: '/products/roofing-systems', label: t('nav.products.roofing') },
-    { href: '/products/metal-structures', label: t('nav.products.structures') },
-    { href: '/products/bending', label: t('nav.products.bending') },
-    { href: '/products/cutting', label: t('nav.products.cutting') },
-    { href: '/products/welding', label: t('nav.products.welding') },
-    { href: '/products/custom', label: t('nav.products.custom') },
-  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-2 sm:px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-              <Link href="/" className="flex items-center space-x-2">
-                <div className="p-2 bg-primary rounded-lg">
-                  <Wrench className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <span className="text-xl font-bold text-foreground">LAMARINA BG</span>
-              </Link>
+          {/* Logo - Far Left */}
+          <Link href="/" className="flex items-center space-x-3 pl-2">
+            <div className="relative w-16 h-16">
+              <Image
+                src="/logo.png"
+                alt="LAMARINA BG Logo"
+                fill
+                className="object-contain"
+                priority
+                style={{
+                  background: 'transparent',
+                  filter: 'drop-shadow(0 0 0 transparent)',
+                  mixBlendMode: 'multiply'
+                }}
+              />
+            </div>
+            <span className="text-xl font-bold text-foreground">LAMARINA BG</span>
+          </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Center */}
+          <div className="hidden md:flex items-center space-x-8 flex-1 justify-center">
             {navItems.map((item) => (
-              <Link
+              <button
                 key={item.href}
-                href={item.href}
-                className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium"
+                onClick={() => handleNavClick(item.href)}
+                className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium cursor-pointer"
               >
                 {item.label}
-              </Link>
+              </button>
             ))}
-            
-            {/* Products Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium">
-                  {t('nav.products.title')}
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                {productCategories.map((category) => (
-                  <DropdownMenuItem key={category.href} asChild>
-                    <Link href={category.href} className="w-full">
-                      {category.label}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
 
-              {/* Desktop Actions */}
-              <div className="hidden md:flex items-center space-x-4">
-                <LanguageToggle />
-                <Button asChild variant="outline" size="sm">
-                  <Link href="/admin">
-                    <Wrench className="h-4 w-4 mr-2" />
-                    Админ
-                  </Link>
-                </Button>
-              </div>
+          {/* Desktop Actions - Far Right */}
+          <div className="hidden md:flex items-center space-x-2 pr-2">
+            <LanguageToggle />
+            <Button asChild variant="outline" size="sm">
+              <Link href="/admin">
+                <Wrench className="h-4 w-4 mr-2" />
+                Админ
+              </Link>
+            </Button>
+          </div>
 
           {/* Mobile menu */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2 pr-2">
+            <LanguageToggle />
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="sm" className="text-foreground hover:text-primary">
@@ -102,45 +104,23 @@ export function Navigation() {
                 <div className="px-3 py-2">
                   <nav className="space-y-0.5">
                     {navItems.map((item, index) => (
-                      <Link
+                      <button
                         key={item.href}
-                        href={item.href}
-                        className="block px-3 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-accent/30 rounded-md transition-all duration-200 hover:translate-x-0.5"
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => handleNavClick(item.href)}
+                        className="block w-full text-left px-3 py-2 text-sm font-medium text-foreground hover:text-primary hover:bg-accent/30 rounded-md transition-all duration-200 hover:translate-x-0.5"
                         style={{
                           animationDelay: `${index * 30}ms`,
                         }}
                       >
                         {item.label}
-                      </Link>
+                      </button>
                     ))}
-                    
-                    {/* Products Section in Mobile */}
-                    <div className="pt-2 border-t border-border/30">
-                      <div className="px-3 py-2 text-sm font-semibold text-foreground">
-                        {t('nav.products.title')}
-                      </div>
-                      {productCategories.map((category, index) => (
-                        <Link
-                          key={category.href}
-                          href={category.href}
-                          className="block px-6 py-2 text-sm text-muted-foreground hover:text-primary hover:bg-accent/30 rounded-md transition-all duration-200"
-                          onClick={() => setIsOpen(false)}
-                          style={{
-                            animationDelay: `${(navItems.length + index) * 30}ms`,
-                          }}
-                        >
-                          {category.label}
-                        </Link>
-                      ))}
-                    </div>
                   </nav>
                 </div>
                 
                 {/* Footer Actions */}
                 <div className="p-3 border-t border-border/30 space-y-2 mt-auto">
-                  <div className="flex items-center justify-center space-x-2">
-                    <LanguageToggle />
+                  <div className="flex items-center justify-center">
                     <Button asChild size="sm" className="text-sm h-8 bg-primary hover:bg-primary/90 text-primary-foreground">
                       <Link href="/admin" onClick={() => setIsOpen(false)}>
                         <Wrench className="h-4 w-4 mr-1.5" />

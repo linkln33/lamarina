@@ -1,122 +1,119 @@
-# Supabase Database Setup Guide
+# Supabase Setup Guide
 
-## Step 1: Create Supabase Project
+## Current Status
+The application is currently using **fallback storage** (local data URLs) because Supabase is not properly configured.
 
+## To Enable Supabase Storage
+
+### 1. Create a Supabase Project
 1. Go to [supabase.com](https://supabase.com)
-2. Sign up or log in
-3. Click "New Project"
-4. Choose your organization
-5. Enter project details:
-   - **Name**: `lamarina-bg`
-   - **Database Password**: Choose a strong password
-   - **Region**: Choose closest to your location
-6. Click "Create new project"
-7. Wait for the project to be ready (2-3 minutes)
+2. Create a new project
+3. Wait for the project to be ready
 
-## Step 2: Get Project Credentials
-
-1. Go to **Settings** → **API**
+### 2. Get Your Credentials
+1. Go to **Settings** → **API** in your Supabase dashboard
 2. Copy the following values:
-   - **Project URL** (looks like: `https://your-project-ref.supabase.co`)
-   - **anon public** key (starts with `eyJ...`)
-   - **service_role** key (starts with `eyJ...`)
+   - **Project URL** (e.g., `https://your-project.supabase.co`)
+   - **Anon Key** (public key)
+   - **Service Role Key** (secret key)
 
-## Step 3: Create Environment File
+### 3. Update Environment Variables
+Create or update `.env.local` file:
 
-Create `.env.local` in your project root:
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+```
 
+### 4. Create Storage Buckets
+Run this SQL in your Supabase SQL Editor:
+
+```sql
+-- Create media bucket
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'media',
+  'media',
+  true,
+  10485760, -- 10MB limit
+  ARRAY['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm']
+)
+ON CONFLICT (id) DO NOTHING;
+
+-- Create storage policies
+CREATE POLICY "Public read access for media" ON storage.objects
+FOR SELECT USING (bucket_id = 'media');
+
+CREATE POLICY "Authenticated users can upload to media" ON storage.objects
+FOR INSERT WITH CHECK (bucket_id = 'media' AND auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can update media" ON storage.objects
+FOR UPDATE USING (bucket_id = 'media' AND auth.role() = 'authenticated');
+
+CREATE POLICY "Authenticated users can delete media" ON storage.objects
+FOR DELETE USING (bucket_id = 'media' AND auth.role() = 'authenticated');
+```
+
+### 5. Restart Development Server
 ```bash
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
-
-# Next.js Configuration
-NEXT_TELEMETRY_DISABLED=1
-NODE_ENV=development
-
-# Site Configuration
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_SITE_NAME=LAMARINA BG
+npm run dev
 ```
 
-## Step 4: Set Up Database Schema
+### 6. Test Upload
+1. Go to `/admin/homepage`
+2. Navigate to **Hero** tab
+3. Try uploading an image
+4. You should see "Supabase" badge instead of "Local Storage"
 
-1. Go to **SQL Editor** in your Supabase dashboard
-2. Click "New Query"
-3. Copy and paste the entire content from `supabase-schema.sql`
-4. Click "Run" to execute the schema
+## Current Fallback Behavior
 
-## Step 5: Set Up Storage
+### What Works Now:
+- ✅ **Image Upload**: Drag & drop and file selection
+- ✅ **Image Preview**: See uploaded images immediately
+- ✅ **Image Management**: Remove, set primary, edit alt text
+- ✅ **Multiple Files**: Upload multiple images at once
+- ✅ **File Validation**: Type and size checking
 
-1. Go to **Storage** in your Supabase dashboard
-2. Click "Create a new bucket"
-3. Enter bucket name: `images`
-4. Make it **Public**
-5. Click "Create bucket"
+### Limitations:
+- ❌ **Persistence**: Images are stored as data URLs (lost on refresh)
+- ❌ **Performance**: Large images as data URLs can be slow
+- ❌ **Sharing**: Images can't be shared between sessions
+- ❌ **Storage**: No permanent cloud storage
 
-## Step 6: Configure Storage Policies
-
-1. Go to **Storage** → **Policies**
-2. Click "New Policy" for the `images` bucket
-3. Add these policies:
-
-### Policy 1: Allow public read access
-```sql
-CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'images');
-```
-
-### Policy 2: Allow authenticated uploads
-```sql
-CREATE POLICY "Authenticated Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'images' AND auth.role() = 'authenticated');
-```
-
-### Policy 3: Allow authenticated updates
-```sql
-CREATE POLICY "Authenticated Update" ON storage.objects FOR UPDATE USING (bucket_id = 'images' AND auth.role() = 'authenticated');
-```
-
-### Policy 4: Allow authenticated deletes
-```sql
-CREATE POLICY "Authenticated Delete" ON storage.objects FOR DELETE USING (bucket_id = 'images' AND auth.role() = 'authenticated');
-```
-
-## Step 7: Test the Setup
-
-1. Restart your development server:
-   ```bash
-   npm run dev
-   ```
-
-2. Go to `http://localhost:3000/admin/listings`
-
-3. Try creating a new listing and uploading images
+## Benefits of Supabase Storage:
+- ✅ **Permanent Storage**: Images persist across sessions
+- ✅ **Performance**: Optimized cloud storage
+- ✅ **Sharing**: Images can be shared and accessed publicly
+- ✅ **Scalability**: Handle large amounts of media
+- ✅ **Security**: Proper authentication and access control
 
 ## Troubleshooting
 
-### Images not uploading?
-- Check that the `images` bucket exists and is public
-- Verify storage policies are set correctly
-- Check browser console for errors
+### Upload Still Fails:
+1. Check that environment variables are correct
+2. Verify Supabase project is active
+3. Check browser console for errors
+4. Ensure storage buckets exist
 
-### Database connection issues?
-- Verify environment variables are correct
-- Check that the database schema was applied
-- Ensure RLS policies are configured
+### Images Not Displaying:
+1. Check that bucket is set to public
+2. Verify storage policies are correct
+3. Check network tab for failed requests
 
-### Still having issues?
-- Check the Supabase logs in the dashboard
-- Verify your project is not paused
-- Make sure you're using the correct region
+### Permission Errors:
+1. Ensure user is authenticated
+2. Check storage policies allow uploads
+3. Verify service role key is correct
 
-## Quick Test Commands
+## Development vs Production
 
-```bash
-# Check if environment variables are loaded
-echo $NEXT_PUBLIC_SUPABASE_URL
+### Development (Current):
+- Uses local data URLs
+- Images lost on page refresh
+- Good for testing functionality
 
-# Test the application
-curl http://localhost:3000/admin/listings
-```
-
-
+### Production (With Supabase):
+- Uses cloud storage
+- Images persist permanently
+- Better performance and scalability
