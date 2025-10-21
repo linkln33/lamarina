@@ -29,7 +29,7 @@ export default function SettingsPage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="site-name">Име на сайта</Label>
-              <Input id="site-name" defaultValue="La Marina" />
+              <Input id="site-name" defaultValue="LAMARINA BG" />
             </div>
             <div className="space-y-2">
               <Label htmlFor="site-description">Описание</Label>

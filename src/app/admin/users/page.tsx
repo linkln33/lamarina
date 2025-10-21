@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,7 +34,7 @@ export default function UsersPage() {
   };
 
   const handleCreateUser = () => {
-    const newUser = DatabaseService.createUser({
+    DatabaseService.createUser({
       email: 'new@lamarina.bg',
       firstName: 'Нов',
       lastName: 'Потребител',
@@ -104,7 +105,7 @@ export default function UsersPage() {
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                       {user.avatar ? (
-                        <img src={user.avatar} alt={`${user.firstName} ${user.lastName}`} className="w-10 h-10 rounded-full object-cover" />
+                        <Image src={user.avatar} alt={`${user.firstName} ${user.lastName}`} width={40} height={40} className="w-10 h-10 rounded-full object-cover" />
                       ) : (
                         <Shield className="h-5 w-5 text-primary" />
                       )}

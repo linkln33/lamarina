@@ -33,7 +33,7 @@ export default function PagesPage() {
   };
 
   const handleCreatePage = () => {
-    const newPage = DatabaseService.createPage({
+    DatabaseService.createPage({
       title: 'Нова страница',
       slug: 'nova-stranitsa',
       content: 'Съдържание на страницата...',

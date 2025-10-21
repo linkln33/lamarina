@@ -51,9 +51,9 @@ export default function HomepageEditor() {
     setContent(prev => ({ ...prev, blog }));
   };
 
-  const updateContact = (contact: typeof content.contact) => {
-    setContent(prev => ({ ...prev, contact }));
-  };
+  // const updateContact = (contact: typeof content.contact) => {
+  //   setContent(prev => ({ ...prev, contact }));
+  // };
 
   return (
     <div className="space-y-6 min-w-0 w-full">

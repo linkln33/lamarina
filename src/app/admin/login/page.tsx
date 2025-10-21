@@ -43,7 +43,7 @@ export default function AdminLogin() {
               <div className="p-2 bg-primary rounded-lg">
                 <Wrench className="h-6 w-6 text-primary-foreground" />
               </div>
-              <span className="text-2xl font-bold text-white">La Marina</span>
+              <span className="text-2xl font-bold text-white">LAMARINA BG</span>
             </div>
             <CardTitle className="text-2xl text-white">Административен вход</CardTitle>
             <p className="text-slate-300">Влезте в административния панел</p>

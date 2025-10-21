@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Search, Edit, Trash2, Eye, Image, ExternalLink } from 'lucide-react';
+import { Plus, Search, Edit, Trash2, Eye, ImageIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'react-hot-toast';
 import { DatabaseService } from '@/lib/database-service';
@@ -32,7 +32,7 @@ export default function PortfolioPage() {
   };
 
   const handleCreateItem = () => {
-    const newItem = DatabaseService.createPortfolioItem({
+    DatabaseService.createPortfolioItem({
       title: 'Нов проект',
       description: 'Описание на проекта...',
       image: '',
@@ -79,7 +79,7 @@ export default function PortfolioPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredItems.length === 0 ? (
           <div className="col-span-full text-center py-8">
-            <Image className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <ImageIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Няма проекти</h3>
             <p className="text-muted-foreground mb-4">
               {searchTerm ? 'Няма намерени проекти с този търсен термин' : 'Създайте първия си проект'}
@@ -94,7 +94,7 @@ export default function PortfolioPage() {
             <Card key={item.id} className="overflow-hidden hover:shadow-lg transition-shadow">
               <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
                 <div className="text-center">
-                  <Image className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
+                  <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-2" />
                   <p className="text-sm text-muted-foreground">{item.count} проекта</p>
                 </div>
               </div>

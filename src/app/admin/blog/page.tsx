@@ -10,7 +10,7 @@ import { useSearchAndFilter } from '@/hooks/admin/useSearchAndFilter';
 import type { BlogPost } from '@/lib/cms';
 
 export default function BlogPage() {
-  const { items: blogPosts, loading, searchTerm, setSearchTerm, createItem, deleteItem } = useCrudOperations<BlogPost>({
+  const { items: blogPosts, searchTerm, setSearchTerm, createItem, deleteItem } = useCrudOperations<BlogPost>({
     entityType: 'blogPosts'
   });
 

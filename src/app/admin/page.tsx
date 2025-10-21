@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Users, FileText, Image, Settings } from 'lucide-react'
+import { Users, FileText, ImageIcon, Settings } from 'lucide-react'
 
 export default function AdminDashboard() {
   const stats = [
@@ -38,7 +38,7 @@ export default function AdminDashboard() {
       <div>
         <h1 className="text-3xl font-bold text-foreground">Административен панел</h1>
         <p className="text-muted-foreground">
-          Добре дошли в административния панел на La Marina
+          Добре дошли в административния панел на ЛАМАРИНА БГ
         </p>
       </div>
 

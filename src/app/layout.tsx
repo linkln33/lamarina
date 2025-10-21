@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "react-hot-toast";
+import { generateLocalBusinessSchema } from "@/lib/seo";
+import { initializeCriticalOptimizations } from "@/lib/critical-css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,8 +44,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const localBusinessSchema = generateLocalBusinessSchema();
+  
   return (
     <html lang="bg" suppressHydrationWarning>
+      <head>
+        <link rel="canonical" href="https://lamarina.bg" />
+        <link rel="alternate" hrefLang="bg" href="https://lamarina.bg" />
+        <link rel="alternate" hrefLang="en" href="https://lamarina.bg/en" />
+        <link rel="alternate" hrefLang="x-default" href="https://lamarina.bg" />
+        
+        {/* Performance optimizations */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://your-supabase-url.supabase.co" />
+        
+        {/* Critical resource preloads */}
+        <link rel="preload" href="/images/hero-bg.webp" as="image" />
+        <link rel="preload" href="/images/logo.svg" as="image" />
+        
+        {/* Structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessSchema)
+          }}
+        />
+        
+        {/* Critical CSS injection */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                ${initializeCriticalOptimizations.toString()}();
+              })();
+            `
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
